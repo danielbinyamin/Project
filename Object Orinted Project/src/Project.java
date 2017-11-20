@@ -316,6 +316,7 @@ public class Project {
 		createCSV(wigleOutputFolder,csvOutputFile);	
 		filterData(sc, csvOutputFile);
 		System.out.println("test");
+		System.out.println("test2");
 	}
 }
 
