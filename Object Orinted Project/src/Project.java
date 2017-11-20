@@ -317,6 +317,8 @@ public class Project {
 		filterData(sc, csvOutputFile);
 		System.out.println("test");
 		System.out.println("test2");
+		System.out.println("daniel");
+
 	}
 }
 
