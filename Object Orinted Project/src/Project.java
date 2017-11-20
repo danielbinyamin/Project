@@ -315,6 +315,7 @@ public class Project {
 		File csvOutputFile= new File(reader);
 		createCSV(wigleOutputFolder,csvOutputFile);	
 		filterData(sc, csvOutputFile);
+		System.out.println("test");
 	}
 }
 
