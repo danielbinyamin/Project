@@ -7,6 +7,9 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import de.micromata.opengis.kml.v_2_2_0.Document;
+import de.micromata.opengis.kml.v_2_2_0.Kml;
+
 /**
  * Main class of the project. Represents a set of records scanned. 
  * Each record in the list represents a specific time & location.
@@ -66,7 +69,7 @@ public class Records {
 				}// all lines from the file are now sorted by "time" in "PITarr". now, for each cell in PITarr
 
 				//			ArrayList<SingleRecord> records = new ArrayList<SingleRecord>();
-				
+
 				/* Goes over PITarr and add each araylist<WiggleLine> as a SingleRecord 
 				 * At the end of the main loop, adds the SingleRecord created to arg 'records'
 				 */
@@ -132,7 +135,30 @@ public class Records {
 		}
 	}
 
-	///////////////////////TODO: add: toKML metthod ///////////////////////////////////
+	public void toKml(File output) {
+		final Kml kml = new Kml();
+		Document document = kml.createAndSetDocument();
+		int counter=1;
+		for (SingleRecord singleRecord : _records) {
+			double lat = singleRecord.get_location().getX();
+			double lon = singleRecord.get_location().getY();
+			String descirption="";
+			for (Wifi wifi : singleRecord.get_WifiList()) {
+				descirption+="Wifi #"+counter+"\n"+wifi.toString()+"\n";
+			}
+			document.createAndAddPlacemark()
+			.withName(singleRecord.get_id()).withOpen(Boolean.TRUE).withDescription(descirption)
+			.createAndSetPoint().addToCoordinates(lon,lat);
+			counter++;
+		}
+		
+		try { kml.marshal(output); }			
+		catch (Exception e) {
+			System.out.println("Error at kml marshal. Exception: \n"+e);
+		}
+
+	}
+
 
 
 }

@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 
+/**
+ * This class represents a single scan at a specific time and place.
+ * @author Daniel
+ *
+ */
 public class SingleRecord {
 	private Point2D _location;
 	private double _altitude;
@@ -11,7 +16,7 @@ public class SingleRecord {
 	private ArrayList<Wifi> _WifiList;
 	private String _id;
 	
-	//TODO: Fix date
+	//constructor
 	public SingleRecord(String id, ArrayList<Wifi> wifiList, String dateAndTime, double lon, double lat, double altitude) {
 		this._id = new String(id);
 		this._WifiList = new ArrayList<>(wifiList);

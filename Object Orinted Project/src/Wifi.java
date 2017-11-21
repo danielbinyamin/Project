@@ -1,12 +1,18 @@
 
-
+/**
+ * This class represents a single Wifi scan.
+ * it implements Comparable in a way that will sort by signal strength
+ * @author Daniel
+ *
+ */
 public class Wifi implements Comparable<Wifi> {
 
 	private String _SSID;
 	private String _MAC;
 	private int _freq;
 	private int _signal;
-
+	
+	//Constructor
 	public Wifi(String _SSID, String _MAC, int _freq, int _signal) {
 		this._SSID = new String(_SSID);
 		this._MAC = new String(_MAC);
@@ -24,9 +30,7 @@ public class Wifi implements Comparable<Wifi> {
 		return -1;
 	}
 
-
-
-
+    //getters
 	public String get_SSID() {
 		return _SSID;
 	}
@@ -47,9 +51,10 @@ public class Wifi implements Comparable<Wifi> {
 		return obj.get_freq()==_freq&&obj.get_MAC().equals(_MAC)&&obj.get_signal()==_signal&&obj.get_SSID().equals(_SSID);
 	}
 
+	//toString method
 	@Override
 	public String toString() {
-		return "Wifi:[_SSID=" + _SSID + ", _MAC=" + _MAC + ", _freq=" + _freq + ", _signal=" + _signal + "]";
+		return "SSID=" + _SSID + ", MAC=" + _MAC + ", freq=" + _freq + ", signal=" + _signal;
 	}
 
 

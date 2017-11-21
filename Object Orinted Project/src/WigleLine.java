@@ -1,9 +1,16 @@
+/**
+ * This class represents a a specific Wifi network scan as captured by the app WiggleWifi
+ * @author Tal
+ *
+ */
+
 public class WigleLine  implements Comparable<WigleLine> {
 
 	private String _mac, _ssid, _auth, _time, _type, _id;
 	private int _channel, _rssi;
 	private double _lat, _lon, _alt, _meters;
 
+	//Constructors
 	public WigleLine(String mac,String ssid,String auth,String time, String channel, String rssi, String lat, String lon, String alt,String meters, String type, String id) {
 		_mac=mac;
 		_ssid=ssid;
@@ -46,6 +53,7 @@ public class WigleLine  implements Comparable<WigleLine> {
 		return -1;
 	}
 	
+	//Getters
 	public String get_mac() {
 		return _mac;
 	}
