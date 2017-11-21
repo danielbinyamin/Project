@@ -1,7 +1,6 @@
 
-
 public interface Condition {
 	
-	boolean test(String[] s);
+	boolean test(SingleRecord s);
 
 }

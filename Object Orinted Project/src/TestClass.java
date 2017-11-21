@@ -12,14 +12,15 @@ public class TestClass {
 				System.out.println("Path of wiggleWifi output folder: ");
 				String reader = sc.nextLine();
 				File wigleOutputFolder = new File(reader);
-//				System.out.println("Path to save output file");
-//				reader = sc.nextLine()+".kml";
-//				File csvOutputFile= new File(reader);
+				System.out.println("Path to save output file");
+				reader = sc.nextLine()+".csv";
+				File csvOutputFile= new File(reader);
 				Records r = new Records();
 				r.CSV2Records(wigleOutputFolder);
-//				r.toCSV(csvOutputFile);
-				
-				r.toKml(new File("test.kml"));
+				r.toCSV(csvOutputFile);
+				Condition c = s->s.get_id().equals("sagit");
+				Records r2 = r.filter(c);
+				r2.toKml(new File("test2.kml"));
 		
 //		Wifi w = new Wifi("ssid","mac",23,-37);
 //		ArrayList<Wifi> l = new ArrayList<>();

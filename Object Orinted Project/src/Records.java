@@ -100,7 +100,7 @@ public class Records {
 
 
 	/**
-	 * This method creates a CSV file from Records object
+	 * This method creates a CSV file from Records object.
 	 * @param output
 	 * @author Daniel
 	 */
@@ -134,7 +134,11 @@ public class Records {
 			System.out.println("Error writing fronm Records to CSV. Exception:\n: "+e);
 		}
 	}
-
+	/**
+	 * This method creates a Kml file from Records object.
+	 * @param output
+	 * @author Daniel
+	 */
 	public void toKml(File output) {
 		final Kml kml = new Kml();
 		Document document = kml.createAndSetDocument();
@@ -151,14 +155,26 @@ public class Records {
 			.createAndSetPoint().addToCoordinates(lon,lat);
 			counter++;
 		}
-		
+
 		try { kml.marshal(output); }			
 		catch (Exception e) {
 			System.out.println("Error at kml marshal. Exception: \n"+e);
 		}
 
 	}
-
-
+	/**
+	 * This method returns a filtered Records object by the c Condition
+	 * @param c (Condition).
+	 * @return Filtered Records object.
+	 * @author Daniel
+	 */
+	public Records filter(Condition c) {
+		ArrayList<SingleRecord> filterd = new ArrayList<SingleRecord>();
+		for (SingleRecord singleRecord : this._records) {
+			if(c.test(singleRecord))
+				filterd.add(singleRecord);	
+		}
+		return new Records(filterd);
+	}
 
 }

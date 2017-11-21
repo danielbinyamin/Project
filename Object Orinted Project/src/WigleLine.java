@@ -1,5 +1,5 @@
 /**
- * This class represents a a specific Wifi network scan as captured by the app WiggleWifi
+ * This class represents a a specific Wifi network scan as captured by the WiggleWifi app
  * @author Tal
  *
  */
