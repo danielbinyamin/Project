@@ -22,9 +22,9 @@ public class SingleRecord {
 		String[] mainarr = dateAndTime.split(" ");
 		String[] date = mainarr[0].split("-");
 		String[] time = mainarr[1].split(":");
-		int day = Integer.parseInt(date[0]);
+		int year = Integer.parseInt(date[0]);
 		int month = Integer.parseInt(date[1]);
-		int year = Integer.parseInt(date[2]);
+		int day = Integer.parseInt(date[2]);
 		int hour = Integer.parseInt(time[0]);
 		int minutes = Integer.parseInt(time[1]);
 		int sec = Integer.parseInt(time[2]);
