@@ -1,24 +1,23 @@
-
-
-import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 
 public class SingleRecord {
-	private Point _location;
+	private Point2D _location;
 	private double _altitude;
 	private Calendar _date;
 	private ArrayList<Wifi> _WifiList;
 	private String _id;
-
-	public SingleRecord(String id, ArrayList<Wifi> wifiList, String dateAndTime, String lon, String lat, String altitude) {
+	
+	//TODO: Fix date
+	public SingleRecord(String id, ArrayList<Wifi> wifiList, String dateAndTime, double lon, double lat, double altitude) {
 		this._id = new String(id);
 		this._WifiList = new ArrayList<>(wifiList);
 		Collections.sort(this._WifiList);
-		this._location = new Point(Integer.parseInt(lat),Integer.parseInt(lon));
-		this._altitude = Double.parseDouble(altitude);
+		this._location = new Point2D.Double(lat,lon);
+		this._altitude = altitude;
 		
 		String[] mainarr = dateAndTime.split(" ");
 		String[] date = mainarr[0].split("-");
@@ -38,7 +37,7 @@ public class SingleRecord {
 	
 	
 	//getters
-	public Point get_location() {
+	public Point2D get_location() {
 		return _location;
 	}
 
