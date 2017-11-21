@@ -12,81 +12,6 @@ import java.util.Scanner;
 
 public class Project {
 
-	private static class WigleLine implements Comparable<WigleLine> {
-
-		private String _mac, _ssid, _auth, _time, _type, _id;
-		private int _channel, _rssi;
-		private double _lat, _lon, _alt, _meters;
-
-		WigleLine(String mac,String ssid,String auth,String time, String channel, String rssi, String lat, String lon, String alt,String meters, String type, String id) {
-			_mac=mac;
-			_ssid=ssid;
-			_auth=auth;
-			_time=time;
-			_type=type;
-			_channel=Integer.parseInt(channel);
-			_rssi=Integer.parseInt(rssi);
-			_lat=Double.parseDouble(lat);
-			_lon=Double.parseDouble(lon);
-			_alt=Double.parseDouble(alt);
-			_meters=Double.parseDouble(meters);
-			_id=id;
-		}
-
-		@Override
-		public int compareTo(WigleLine otherLine) {
-			if (this._rssi <= otherLine._rssi){
-				if (this._rssi < otherLine._rssi)
-					return 1;
-				return 0;
-			}
-			return -1;
-		}
-
-		//getters
-		String mac(){
-			return _mac;
-		}
-		String ssid(){
-			return _ssid;
-		}
-		String auth(){
-			return _auth;
-		}
-		String time(){
-			return _time;
-		}
-		String type(){
-			return _type;
-		}
-		int channel(){
-			return _channel;
-		}
-		int rssi(){
-			return _rssi;
-		}
-		double lat(){
-			return _lat;
-		}
-		double lon(){
-			return _lon;
-		}
-		double alt(){
-			return _alt;
-		}
-		double meters(){
-			return _meters;
-		}
-		String id(){
-			return _id;
-		}
-	}
-
-	public static WigleLine textToWigleLine(String line, String deviceID){
-		String[] data = line.split(",");
-		return new WigleLine(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], deviceID);
-	}
-
 	public static void createCSV (File input, File output){
 		try{
 			File[] listOfFiles = input.listFiles();
@@ -108,15 +33,15 @@ public class Project {
 				line = br.readLine();	//to read the first line of data.
 				line = br.readLine();	
 				while (line != null){	//for each line, convert it to WigleLine and add it to an array with the same time.
-					WigleLine newLine = textToWigleLine(line,deviceID);
+					WigleLine newLine = new WigleLine(line,deviceID);
 					if (PITarr.size()==0 || PITarr.size()<time){
 						ArrayList<WigleLine> arrayPerTime = new ArrayList<>();
 						arrayPerTime.add(newLine);
 						PITarr.add(time, arrayPerTime);
 					}
 					else{
-						String timeOfLastAddedLine = PITarr.get(time).get(0).time(); 
-						if (timeOfLastAddedLine.equals(newLine.time())){
+						String timeOfLastAddedLine = PITarr.get(time).get(0).get_time(); 
+						if (timeOfLastAddedLine.equals(newLine.get_time())){
 							PITarr.get(time).add(newLine);
 						}
 						else{	//if (timeOfLastAddedLine < newLine.time())
@@ -135,11 +60,11 @@ public class Project {
 					ArrayList<WigleLine> currentSpecificTimeList = PITarr.get(specificTime);
 					Collections.sort(currentSpecificTimeList);	//sort list of PIT
 					WigleLine line = currentSpecificTimeList.get(0);
-					outs.print(line.time()+","+line.id()+","+line.lat()+","+line.lon()+","+line.alt()+","+Math.min(10, currentSpecificTimeList.size())+",");
+					outs.print(line.get_time()+","+line.get_id()+","+line.get_lat()+","+line.get_lon()+","+line.get_alt()+","+Math.min(10, currentSpecificTimeList.size())+",");
 					int networkIndex = 0;
 					for (WigleLine network : currentSpecificTimeList)
 					{	//fill rest of line with up to 10 WIFIs
-						outs.print(network.ssid()+","+network.mac()+","+network.channel()+","+network.rssi()+",");
+						outs.print(network.get_ssid()+","+network.get_mac()+","+network.get_channel()+","+network.get_rssi()+",");
 						networkIndex++;
 						if (networkIndex==10)
 							break;
