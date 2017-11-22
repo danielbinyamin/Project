@@ -3,7 +3,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
-
 /**
  * This class is the main executable class
  * TODO: Need to test filterByToKml!
@@ -27,7 +26,7 @@ public class TestClass {
 
 	}
 
-	public static void filterByToKML(Scanner sc, Records r) {
+	public static void filterByToKML(Scanner sc, Records records) {
 		boolean ON = true;
 		while (ON) {
 			//Filter Picking
@@ -47,11 +46,14 @@ public class TestClass {
 				double longt = sc.nextDouble();
 				Point2D locationPick = new Point2D.Double(lat,longt);
 				System.out.println("Enter radius");
-				double radius = sc.nextDouble();
-				Condition c1 = s->locationPick.distance(s.get_location())<=radius;
-				Records Fbyloc = r.filter(c1);
-				Fbyloc.toKml(new File("FilteredBy_"+"Location_"+lat+"_"+longt+"_"+"Radius_"+radius+".kml"));
-				System.out.println("Filtered file ready: FilteredBy_"+"Location_"+lat+"_"+longt+"_"+"Radius_"+radius+".kml");
+				double radius = sc.nextDouble();	//***
+				Condition locationCondition = currSingleRec->locationPick.distance(currSingleRec.get_location())<=radius;
+				Records filtByLoc = records.filter(locationCondition);
+				//***set here input path to save KML file.
+				String fileName = "FilteredBy_"+"Location_"+lat+"_"+longt+"_"+"Radius_"+radius+".kml";
+				File filteredRecord = new File(fileName); 
+				filtByLoc.toKml(filteredRecord);
+				System.out.println("Filtered file ready: " + fileName);
 				break;
 			case 2:/*time*/
 				System.out.println("Enter begging Date (YY-MM-DD)");
@@ -65,7 +67,7 @@ public class TestClass {
 				String time2 = sc.next();
 				Calendar endDate = StringtoDate(date2, time2);
 				Condition c2 = s->s.get_date().after(beginDate) && s.get_date().before(endDate);
-				Records FByTime = r.filter(c2);
+				Records FByTime = records.filter(c2);
 				FByTime.toKml(new File("FilteredBy_"+"Date"+".kml"));
 				System.out.println("FilteredBy_"+"Date"+".kml");
 
@@ -74,7 +76,7 @@ public class TestClass {
 				System.out.println("Enter ID");
 				String id = sc.next();
 				Condition c3 = s->s.get_id().equals(id);
-				Records FById = r.filter(c3);
+				Records FById = records.filter(c3);
 				FById.toKml(new File("FilteredBy_"+"ID_"+id+".kml"));
 				System.out.println("Filtered file ready: FilteredBy_"+"ID_"+id+".kml");
 				break;
@@ -85,7 +87,6 @@ public class TestClass {
 
 
 	public static void main(String[] args) {
-
 		//create main CSV from wiggleWifi dir
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Path of wiggleWifi output folder: ");
@@ -100,9 +101,6 @@ public class TestClass {
 
 		//function call for filter
 		filterByToKML(sc, r);
-
-
-
 	}
 
 }

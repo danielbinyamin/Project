@@ -112,7 +112,7 @@ public class Project {
 			//runs through all lines in main csv file
 			while (StringLine!=null) {
 				line = outputLineToArr(StringLine); //turn String line to a split String array
-				if (c.test(line)) {  //checks if the condition applied is true on current line
+				if (true){//(c.test(line)) {  //checks if the condition applied is true on current line
 					ArrayList<String[]> wifiList = lineToWifiList(line);//list of [4]arrays of wifi
 					outs.println("<Placemark>\n<name>"+line[6]+"</name>");
 					outs.println("<description>List of Wifi: ");
@@ -165,9 +165,9 @@ public class Project {
 				double longt = sc.nextDouble();
 				System.out.println("Enter radius");
 				double radius = sc.nextDouble();
-				Condition c = s->Math.hypot(lat-Double.parseDouble(s[2]),longt-Double.parseDouble(s[3]))<=radius;
-				String outPutFiltered = FilterBy(outputFile,c,"Location_lat"+lat+"_longt"+longt+"_radius"+radius);
-				System.out.println("Filtered file ready: "+outPutFiltered);
+				Condition c;// = s->Math.hypot(lat-Double.parseDouble(s[2]),longt-Double.parseDouble(s[3]))<=radius;
+				String outPutFiltered; // = FilterBy(outputFile,c,"Location_lat"+lat+"_longt"+longt+"_radius"+radius);
+			//	System.out.println("Filtered file ready: "+outPutFiltered);
 				break;
 			case 2: //not working
 				System.out.println("Enter beginng year");
@@ -199,31 +199,31 @@ public class Project {
 				//			01-01-1970  2:00:00 AM
 				//			05-11-2017  11:21:47 PM
 				Date check;
-				Condition c2 = s->begDate.compareTo(
-						new Date(/*year:*/Integer.parseInt(s[0].split(" ")[0].split("-")[2]),
-								/*month:*/Integer.parseInt(s[0].split(" ")[0].split("-")[1]),
-								/*day:*/Integer.parseInt(s[0].split(" ")[0].split("-")[0]),
-								/*hour:*/		Integer.parseInt(s[0].split(" ")[1].split(":")[0]),
-								/*minutes:*/Integer.parseInt(s[0].split(" ")[1].split(":")[1]),
-								/*seconds:*/Integer.parseInt(s[0].split(" ")[1].split(":")[2]))) <= 0 //before or same date
-								&&
-								endDate.compareTo(
-										new Date(/*year:*/Integer.parseInt(s[0].split(" ")[0].split("-")[2]),
-												/*month:*/Integer.parseInt(s[0].split(" ")[0].split("-")[1]),
-												/*day:*/Integer.parseInt(s[0].split(" ")[0].split("-")[0]),
-												/*hour:*/		Integer.parseInt(s[0].split(" ")[1].split(":")[0]),
-												/*minutes:*/Integer.parseInt(s[0].split(" ")[1].split(":")[1]),
-												/*seconds:*/Integer.parseInt(s[0].split(" ")[1].split(":")[2]))) >= 0; //before or same date
-												String outPutFiltered2 = FilterBy(outputFile,c2,"Time_BeginingTime__EndTime");	//fix time show
-												System.out.println("Filtered file ready: "+outPutFiltered2);
+//				Condition c2 = s->begDate.compareTo(
+//						new Date(/*year:*/Integer.parseInt(s[0].split(" ")[0].split("-")[2]),
+//								/*month:*/Integer.parseInt(s[0].split(" ")[0].split("-")[1]),
+//								/*day:*/Integer.parseInt(s[0].split(" ")[0].split("-")[0]),
+//								/*hour:*/		Integer.parseInt(s[0].split(" ")[1].split(":")[0]),
+//								/*minutes:*/Integer.parseInt(s[0].split(" ")[1].split(":")[1]),
+//								/*seconds:*/Integer.parseInt(s[0].split(" ")[1].split(":")[2]))) <= 0 //before or same date
+//								&&
+//								endDate.compareTo(
+//										new Date(/*year:*/Integer.parseInt(s[0].split(" ")[0].split("-")[2]),
+//												/*month:*/Integer.parseInt(s[0].split(" ")[0].split("-")[1]),
+//												/*day:*/Integer.parseInt(s[0].split(" ")[0].split("-")[0]),
+//												/*hour:*/		Integer.parseInt(s[0].split(" ")[1].split(":")[0]),
+//												/*minutes:*/Integer.parseInt(s[0].split(" ")[1].split(":")[1]),
+//												/*seconds:*/Integer.parseInt(s[0].split(" ")[1].split(":")[2]))) >= 0; //before or same date
+//												String outPutFiltered2 = FilterBy(outputFile,c2,"Time_BeginingTime__EndTime");	//fix time show
+//												System.out.println("Filtered file ready: "+outPutFiltered2);
 												break;
 
 			case 3:
 				System.out.println("Enter ID");
 				String id = sc.next();
-				Condition c3 = s->s[1].equals(id);
-				String outPutFiltered3 = FilterBy(outputFile,c3,"ID_"+id);
-				System.out.println("KML file is at "+outPutFiltered3);
+//				Condition c3 = s->s[1].equals(id);
+//				String outPutFiltered3 = FilterBy(outputFile,c3,"ID_"+id);
+//				System.out.println("KML file is at "+outPutFiltered3);
 				break;
 			default: break;
 			}			
@@ -240,6 +240,7 @@ public class Project {
 		File csvOutputFile= new File(reader);
 		createCSV(wigleOutputFolder,csvOutputFile);	
 		filterData(sc, csvOutputFile);
+		System.out.println("test_tal");
 	}
 }
 

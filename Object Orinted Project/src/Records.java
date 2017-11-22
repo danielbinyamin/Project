@@ -5,10 +5,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.io.StreamCorruptedException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
+import de.micromata.opengis.kml.v_2_2_0.AltitudeMode;
+import de.micromata.opengis.kml.v_2_2_0.Coordinate;
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
+import de.micromata.opengis.kml.v_2_2_0.KmlFactory;
+import de.micromata.opengis.kml.v_2_2_0.Placemark;
+import de.micromata.opengis.kml.v_2_2_0.Point;
 
 /**
  * Main class of the project. Represents a set of records scanned. 
@@ -68,7 +77,6 @@ public class Records {
 				br.close();
 				}// all lines from the file are now sorted by "time" in "PITarr". now, for each cell in PITarr
 
-				//			ArrayList<SingleRecord> records = new ArrayList<SingleRecord>();
 
 				/* Goes over PITarr and add each araylist<WiggleLine> as a SingleRecord 
 				 * At the end of the main loop, adds the SingleRecord created to arg 'records'
@@ -88,8 +96,11 @@ public class Records {
 					double alt = arrayList.get(0).get_alt();
 					String date = arrayList.get(0).get_time();
 					String id =  arrayList.get(0).get_id();
-					SingleRecord currentRec = new SingleRecord(id, Wifilist,date,lon,lat,alt);
-					this._records.add(currentRec);
+					try{
+						SingleRecord currentRec = new SingleRecord(id, Wifilist,date,lon,lat,alt);
+						this._records.add(currentRec);
+					}
+					catch (Exception e){System.out.println("EXCEPTION: "+e);}
 				}
 			}
 		}
@@ -131,7 +142,7 @@ public class Records {
 			writer.close();
 		}
 		catch (Exception e) {
-			System.out.println("Error writing fronm Records to CSV. Exception:\n: "+e);
+			System.out.println("Error writing from Records to CSV. Exception:\n: "+e);
 		}
 	}
 	/**
@@ -140,28 +151,41 @@ public class Records {
 	 * @author Daniel
 	 */
 	public void toKml(File output) {
-		final Kml kml = new Kml();
+		// The all encapsulating kml element.
+		Kml kml = new Kml();	//KmlFactory.createKml();***
 		Document document = kml.createAndSetDocument();
-		int counter=1;
+		int wifiCounter=1;
 		for (SingleRecord singleRecord : _records) {
 			double lat = singleRecord.get_location().getX();
 			double lon = singleRecord.get_location().getY();
-			String descirption="";
+			Date dateType = singleRecord.get_date().getTime();
+			System.out.println("\nDate: "+dateType.toString());
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//***explain this
+			String srDate = dateFormat.format(dateType);
+			String description="";
 			for (Wifi wifi : singleRecord.get_WifiList()) {
-				descirption+="Wifi #"+counter+"\n"+wifi.toString()+"\n";
+				description+="Wifi #"+wifiCounter+"\n"+wifi.toString()+"\n";
 			}
-			document.createAndAddPlacemark()
-			.withName(singleRecord.get_id()).withOpen(Boolean.TRUE).withDescription(descirption)
-			.createAndSetPoint().addToCoordinates(lon,lat);
-			counter++;
+			String placemarkName = singleRecord.get_id();
+			// Create <Placemark> and set values.	
+			Placemark placeMark = document.createAndAddPlacemark();
+			placeMark.setName(placemarkName);
+			placeMark.setVisibility(true);
+			placeMark.setOpen(false);
+			placeMark.setDescription(description);
+			placeMark.createAndSetTimeStamp().setWhen(srDate);
+			placeMark.createAndSetPoint().addToCoordinates(lon,lat);
+					//placemark.setStyleUrl("styles.kml#jugh_style");
+			document.addToFeature(placeMark);	//***not sure about it
+			kml.setFeature(document);	// <-- placemark is registered at kml ownership.
+			wifiCounter++;
 		}
-
 		try { kml.marshal(output); }			
 		catch (Exception e) {
 			System.out.println("Error at kml marshal. Exception: \n"+e);
 		}
-
 	}
+
 	/**
 	 * This method returns a filtered Records object by the c Condition
 	 * @param c (Condition).
