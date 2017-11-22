@@ -159,7 +159,7 @@ public class Records {
 			double lat = singleRecord.get_location().getX();
 			double lon = singleRecord.get_location().getY();
 			Date dateType = singleRecord.get_date().getTime();
-			System.out.println("\nDate: "+dateType.toString());
+//			System.out.println("\nDate: "+dateType.toString());
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//***explain this
 			String srDate = dateFormat.format(dateType);
 			String description="";
