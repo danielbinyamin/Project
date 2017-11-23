@@ -30,11 +30,11 @@ public class Records {
 
 	//Constructors
 	public Records(ArrayList<SingleRecord> records) {
-		this._records = new ArrayList<SingleRecord>(records);
+		_records = new ArrayList<SingleRecord>(records);
 	}
 
 	public Records(){
-		this._records = new ArrayList<SingleRecord>();
+		_records = new ArrayList<SingleRecord>();
 	}
 
 	/**
@@ -193,6 +193,10 @@ public class Records {
 		catch (Exception e) {
 			System.out.println("Error at kml marshal. Exception: \n"+e);
 		}
+	}
+	
+	public ArrayList<SingleRecord> getSingleRecordsList(){
+		return _records;
 	}
 
 	/**
