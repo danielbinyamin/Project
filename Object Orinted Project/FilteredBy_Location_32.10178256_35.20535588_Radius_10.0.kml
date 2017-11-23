@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0">
+    <Placemark>
+        <name>PRO6</name>
+        <visibility>1</visibility>
+        <open>0</open>
+        <description>Wifi #228
+SSID=AndroidAP, MAC=ae:5f:3e:5a:85:c1, freq=6, signal=-83
+Wifi #228
+SSID=afikim-wifi, MAC=34:0b:01:19:21:42, freq=7, signal=-85
+</description>
+        <TimeStamp>
+            <when>06-11-2017 09:08:52</when>
+        </TimeStamp>
+        <Point>
+            <extrude>0</extrude>
+            <altitudeMode>clampToGround</altitudeMode>
+            <coordinates>35.2094883333333,32.1032333333333</coordinates>
+        </Point>
+    </Placemark>
+</kml>
