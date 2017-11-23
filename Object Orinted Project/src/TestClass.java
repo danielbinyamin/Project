@@ -1,6 +1,8 @@
 
 import java.awt.geom.Point2D;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
@@ -56,7 +58,7 @@ public class TestClass {
 				Records filtByLoc = records.filter(locationCondition);
 				//***set here input path to save KML file.
 				fileName = "FilteredBy_"+"Location_"+lat+"_"+longt+"_"+"Radius_"+radius+".kml";
-				filteredRecord = new File(pathToSaveFile + fileName); 
+				filteredRecord = new File(pathToSaveFile + "\\" + fileName); 
 				filtByLoc.toKml(filteredRecord);
 				System.out.println("Filtered file ready.");
 				System.out.println("Path to filtered file: " + pathToSaveFile);
@@ -68,13 +70,11 @@ public class TestClass {
 				System.out.println("Enter begging Time(HH:MM:SS)");
 				String begTime = sc.next();
 				Calendar beginDate = StringtoDate(begDay, begTime);
-				System.out.println("beginDate: "+beginDate.toString());
 				System.out.println("Enter end Date (YYYY-MM-DD)");
 				String endDay = sc.next();
 				System.out.println("Enter end Time(HH:MM:SS)");
 				String endTime = sc.next();
 				Calendar endDate = StringtoDate(endDay, endTime);
-				System.out.println("endDate: "+endDate.toString());
 				//Condition timeCondition = currSingleRec->currSingleRec.get_date().after(beginDate) && currSingleRec.get_date().before(endDate);
 				Condition timeCondition = currSingleRec->currSingleRec.get_date().compareTo(beginDate)>=0 && currSingleRec.get_date().compareTo(endDate)<=0;
 				Records filtByTime = records.filter(timeCondition);
@@ -87,13 +87,14 @@ public class TestClass {
 				System.out.println("Filtered file ready: " + fileName);
 				break;
 			case 3: /*id*/
+				sc.nextLine();
 				System.out.println("Enter ID");
-				String id = sc.next();
+				String id = sc.nextLine();
 				Condition idCondition = currSingleRec->currSingleRec.get_id().equals(id);
 				Records filtByID = records.filter(idCondition);
 				//***set here input path to save KML file.
 				fileName = "FilteredBy_"+"ID_"+id+".kml";
-				filteredRecord = new File(pathToSaveFile + fileName); 
+				filteredRecord = new File(pathToSaveFile + "\\" + fileName); 
 				filtByID.toKml(filteredRecord);
 				System.out.println("Filtered file ready.");
 				System.out.println("Path to filtered file: " + pathToSaveFile);
