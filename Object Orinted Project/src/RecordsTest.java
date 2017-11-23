@@ -83,10 +83,20 @@ public class RecordsTest {
 			assertTrue(line.split(",")[1].equals("TESTid"));
 		}
 		catch(Exception e){
-			assertTrue(false);	//dont know how to assert on exception
+			assertTrue(false);	//don't know how to assert on exception
 		}
-
-
+	}
+	
+	@Test
+	public void testToKml() {
+		Records r = new Records();
+		File file = new File("C:/wigle/testEx1/test");
+		r.CSV2Records(file);
+		File file2 = new File("C:/wigle/testEx1/test/output.csv");
+		r.toCSV(file2);
+		File file3 = new File("C:/wigle/testEx1/test/outputKML.kml");
+		r.toKml(file3);
+		//here we need to check if KML is well-formed xml.
 	}
 
 

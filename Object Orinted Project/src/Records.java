@@ -1,23 +1,15 @@
-
-import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.io.StreamCorruptedException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-
-import de.micromata.opengis.kml.v_2_2_0.AltitudeMode;
-import de.micromata.opengis.kml.v_2_2_0.Coordinate;
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
-import de.micromata.opengis.kml.v_2_2_0.KmlFactory;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
-import de.micromata.opengis.kml.v_2_2_0.Point;
+
 
 /**
  * Main class of the project. Represents a set of records scanned. 
@@ -159,7 +151,7 @@ public class Records {
 	 * @param output
 	 * @author Daniel
 	 */
-	public void toKml(File output) {
+	public void toKml(File output){
 		// The all encapsulating kml element.
 		Kml kml = new Kml();
 		Document document = kml.createAndSetDocument();
