@@ -23,4 +23,7 @@ The structure of the code is as follows:
 
 -A main executable class called RunnableClass.
 
+To handle the KML types we used the JAK (Java api for KML) api which is part of de.micromata projects. We found a version of this api in .jar format and used it because it is more comfertable to work with as opposed to open source. We picked this api because after some research online we came to conclusion that this api is the one vastly used and which has the most example.
+For a kick start we used examples from:
+https://labs.micromata.de/projects/jak/quickstart.html
 
