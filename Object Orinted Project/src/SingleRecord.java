@@ -29,13 +29,12 @@ public class SingleRecord {
 		Collections.sort(this._WifiList);
 		_location = new Point2D.Double(lat,lon);
 		_altitude = altitude;
-
 		String[] mainarr = dateAndTime.split(" ");
-		String[] date = mainarr[0].split("-");
+		String[] date = setDate(mainarr[0]);
 		String[] time = mainarr[1].split(":");
-		int year = 2000 + Integer.parseInt(date[2]);
+		int year = Integer.parseInt(date[0]);
 		int month = Integer.parseInt(date[1]);
-		int day = Integer.parseInt(date[0]);
+		int day = Integer.parseInt(date[2]);
 		int hour = Integer.parseInt(time[0]);
 		int minutes = Integer.parseInt(time[1]);
 		int sec;
@@ -44,8 +43,34 @@ public class SingleRecord {
 		}
 		else	//this line HAS seconds parameter
 			sec = Integer.parseInt(time[2]);
-		this._date = Calendar.getInstance();
+		_date = Calendar.getInstance();
 		_date.set(year, month-1,day,hour,minutes,sec);
+	}
+
+	private String[] setDate(String date){
+		String[] dateParts = date.split("-");
+		String[] validDate = new String[3];
+		if (dateParts[0].length() == 4){//if format is "yyyy-mm-dd", dont change it
+			return dateParts;
+		}
+		if (dateParts[2].length() == 4){//if format is "yyyy-mm-dd"
+			String year = dateParts[2];
+			String month = dateParts[1];
+			String day = dateParts[0];
+			validDate[0] = year;
+			validDate[1] = month;
+			validDate[2] = day;
+			return validDate;
+		}
+		else{
+			String year = "20"+dateParts[2];
+			String month = dateParts[1];
+			String day = dateParts[0];
+			validDate[0] = year;
+			validDate[1] = month;
+			validDate[2] = day;
+			return validDate;
+		}
 	}
 
 	//getters

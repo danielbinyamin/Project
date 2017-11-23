@@ -55,22 +55,25 @@ public class Records {
 					line = br.readLine();	//to read the first line of data.
 					line = br.readLine();	
 					while (line != null){	//for each line, convert it to WigleLine and add it to an array with the same time.
-						WigleLine newLine = new WigleLine(line,deviceID);
-						if (PITarr.size()==0 || PITarr.size()<time){	//if it's the first line in file, or this line was written after the last line
-							ArrayList<WigleLine> arrayPerTime = new ArrayList<>();
-							arrayPerTime.add(newLine);
-							PITarr.add(time, arrayPerTime);
-						}
-						else{
-							String timeOfLastAddedLine = PITarr.get(time).get(0).get_time(); 
-							if (timeOfLastAddedLine.equals(newLine.get_time())){
-								PITarr.get(time).add(newLine);
-							}
-							else{	//if (timeOfLastAddedLine < newLine.time())
-								time++;
+						if (!line.split(",")[3].contains("70")){
+							System.out.println(line);
+							WigleLine newLine = new WigleLine(line,deviceID);
+							if (PITarr.size()==0 || PITarr.size()<time){	//if it's the first line in file, or this line was written after the last line
 								ArrayList<WigleLine> arrayPerTime = new ArrayList<>();
 								arrayPerTime.add(newLine);
 								PITarr.add(time, arrayPerTime);
+							}
+							else{
+								String timeOfLastAddedLine = PITarr.get(time).get(0).get_time(); 
+								if (timeOfLastAddedLine.equals(newLine.get_time())){
+									PITarr.get(time).add(newLine);
+								}
+								else{	//if (timeOfLastAddedLine < newLine.time())
+									time++;
+									ArrayList<WigleLine> arrayPerTime = new ArrayList<>();
+									arrayPerTime.add(newLine);
+									PITarr.add(time, arrayPerTime);
+								}
 							}
 						}
 						line = br.readLine();	//continue to the next line
@@ -128,8 +131,14 @@ public class Records {
 			//end headers
 
 			outs.println();	//one line down in the CSV output file.
-			for (SingleRecord singleRecord : _records) { 
-				outs.print(singleRecord.get_date().getTime()+","+singleRecord.get_id()+","+singleRecord.get_location().getX()+","+singleRecord.get_location().getY()+","+singleRecord.get_altitude()+","+Math.min(10, singleRecord.get_WifiList().size())+",");
+			for (SingleRecord singleRecord : _records) {
+				Date time = singleRecord.get_date().getTime();
+				String id = singleRecord.get_id();
+				double lan = singleRecord.get_location().getX();
+				double lot = singleRecord.get_location().getY();
+				double alt = singleRecord.get_altitude();
+				int numOfNetworks = Math.min(10, singleRecord.get_WifiList().size());
+				outs.print(time+","+id+","+lan+","+lot+","+alt+","+numOfNetworks+",");
 				int networkIndex = 0;
 				for (Wifi network : singleRecord.get_WifiList()) {	//fill rest of line with up to 10 WIFIs
 					outs.print(network.get_SSID()+","+network.get_MAC()+","+network.get_freq()+","+network.get_signal()+",");
@@ -163,7 +172,6 @@ public class Records {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");//***explain this
 			SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");//***explain this
 			String srDate = dateFormat.format(dateType)+"T"+timeFormat.format(dateType)+"Z";
-			//System.out.println(srDate);
 			String description="";
 			for (Wifi wifi : singleRecord.get_WifiList()) {
 				description+="Wifi #"+wifiCounter+"\n"+wifi.toString()+"\n";
@@ -178,7 +186,7 @@ public class Records {
 			placeMark.createAndSetTimeStamp().setWhen(srDate);
 			placeMark.createAndSetPoint().addToCoordinates(lon,lat);
 			//placemark.setStyleUrl("styles.kml#jugh_style");
-			document.addToFeature(placeMark);	//***not sure about it
+			document.addToFeature(placeMark);
 			kml.setFeature(document);	// <-- placemark is registered at kml ownership.
 			wifiCounter++;
 		}
@@ -196,7 +204,7 @@ public class Records {
 	 */
 	public Records filter(Condition c) {
 		ArrayList<SingleRecord> filterd = new ArrayList<SingleRecord>();
-		for (SingleRecord singleRecord : this._records) {
+		for (SingleRecord singleRecord : _records) {
 			if(c.test(singleRecord))
 				filterd.add(singleRecord);	
 		}
