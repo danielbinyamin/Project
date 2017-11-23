@@ -1,4 +1,4 @@
-This is aמ ongoing project on our Object Oriented course in Ariel university.
+This is an ongoing project on our Object Oriented course in Ariel university.
 
 This project recives variouse scans captured from the WiggleWifi android app and puts together a main csv file which joins all this information into one. We have implemented an option to filter the main CSV by various choices and export this filter to a KML file which can be viewed on Google Earth.
 
