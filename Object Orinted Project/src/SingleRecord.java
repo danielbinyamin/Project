@@ -1,3 +1,4 @@
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,11 +24,11 @@ public class SingleRecord {
 
 	//constructor
 	public SingleRecord(String id, ArrayList<Wifi> wifiList, String dateAndTime, double lon, double lat, double altitude) {
-		this._id = new String(id);
-		this._WifiList = new ArrayList<>(wifiList);
+		_id = new String(id);
+		_WifiList = new ArrayList<>(wifiList);
 		Collections.sort(this._WifiList);
-		this._location = new Point2D.Double(lat,lon);
-		this._altitude = altitude;
+		_location = new Point2D.Double(lat,lon);
+		_altitude = altitude;
 
 		String[] mainarr = dateAndTime.split(" ");
 		String[] date = mainarr[0].split("-");

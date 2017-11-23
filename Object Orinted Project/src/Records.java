@@ -38,7 +38,7 @@ public class Records {
 	}
 
 	/**
-	 * This method turn a dirctory with WiggleWifi csv's to
+	 * This method turn a directory with WiggleWifi csv's to
 	 * @param dir
 	 */	
 	public void CSV2Records(File dir) {
@@ -46,35 +46,36 @@ public class Records {
 			File[] listOfFiles = dir.listFiles();
 			for (File file : listOfFiles) {
 				ArrayList<ArrayList<WigleLine>> PITarr = new ArrayList<>();	//PITarr = array of arrays. each inner array has scans from the same time.
-				if (!file.isDirectory() && file.getName().contains("WigleWifi")) {	int time = 0;	//time = number of different "time" string. 
-				BufferedReader br = new BufferedReader(new FileReader(file));
-				String line = br.readLine();
-				String[] headerOfInputCSV = line.split(",");
-				String deviceID = headerOfInputCSV[4].substring(7);		//same device ID to all lines in a file.
-				line = br.readLine();	//to read the first line of data.
-				line = br.readLine();	
-				while (line != null){	//for each line, convert it to WigleLine and add it to an array with the same time.
-					WigleLine newLine = new WigleLine(line,deviceID);
-					if (PITarr.size()==0 || PITarr.size()<time){
-						ArrayList<WigleLine> arrayPerTime = new ArrayList<>();
-						arrayPerTime.add(newLine);
-						PITarr.add(time, arrayPerTime);
-					}
-					else{
-						String timeOfLastAddedLine = PITarr.get(time).get(0).get_time(); 
-						if (timeOfLastAddedLine.equals(newLine.get_time())){
-							PITarr.get(time).add(newLine);
-						}
-						else{	//if (timeOfLastAddedLine < newLine.time())
-							time++;
+				if (!file.isDirectory() && file.getName().contains("WigleWifi")){ 	//if you find a valid WiglleWIFI csv file...
+					int time = 0;	//time = number of different "time" string. 
+					BufferedReader br = new BufferedReader(new FileReader(file));
+					String line = br.readLine();
+					String[] headerOfInputCSV = line.split(",");
+					String deviceID = headerOfInputCSV[4].substring(7);		//same device ID to all lines in a file.
+					line = br.readLine();	//to read the first line of data.
+					line = br.readLine();	
+					while (line != null){	//for each line, convert it to WigleLine and add it to an array with the same time.
+						WigleLine newLine = new WigleLine(line,deviceID);
+						if (PITarr.size()==0 || PITarr.size()<time){	//if it's the first line in file, or this line was written after the last line
 							ArrayList<WigleLine> arrayPerTime = new ArrayList<>();
 							arrayPerTime.add(newLine);
 							PITarr.add(time, arrayPerTime);
 						}
+						else{
+							String timeOfLastAddedLine = PITarr.get(time).get(0).get_time(); 
+							if (timeOfLastAddedLine.equals(newLine.get_time())){
+								PITarr.get(time).add(newLine);
+							}
+							else{	//if (timeOfLastAddedLine < newLine.time())
+								time++;
+								ArrayList<WigleLine> arrayPerTime = new ArrayList<>();
+								arrayPerTime.add(newLine);
+								PITarr.add(time, arrayPerTime);
+							}
+						}
+						line = br.readLine();	//continue to the next line
 					}
-					line = br.readLine();	//continue to the next line
-				}
-				br.close();
+					br.close();
 				}// all lines from the file are now sorted by "time" in "PITarr". now, for each cell in PITarr
 
 
@@ -159,9 +160,10 @@ public class Records {
 			double lat = singleRecord.get_location().getX();
 			double lon = singleRecord.get_location().getY();
 			Date dateType = singleRecord.get_date().getTime();
-//			System.out.println("\nDate: "+dateType.toString());
-			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//***explain this
-			String srDate = dateFormat.format(dateType);
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");//***explain this
+			SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");//***explain this
+			String srDate = dateFormat.format(dateType)+"T"+timeFormat.format(dateType)+"Z";
+			//System.out.println(srDate);
 			String description="";
 			for (Wifi wifi : singleRecord.get_WifiList()) {
 				description+="Wifi #"+wifiCounter+"\n"+wifi.toString()+"\n";
@@ -175,7 +177,7 @@ public class Records {
 			placeMark.setDescription(description);
 			placeMark.createAndSetTimeStamp().setWhen(srDate);
 			placeMark.createAndSetPoint().addToCoordinates(lon,lat);
-					//placemark.setStyleUrl("styles.kml#jugh_style");
+			//placemark.setStyleUrl("styles.kml#jugh_style");
 			document.addToFeature(placeMark);	//***not sure about it
 			kml.setFeature(document);	// <-- placemark is registered at kml ownership.
 			wifiCounter++;

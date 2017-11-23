@@ -1,3 +1,4 @@
+
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.util.ArrayList;
@@ -92,9 +93,10 @@ public class TestClass {
 		System.out.println("Path of wiggleWifi output folder: ");
 		String reader = sc.nextLine();
 		File wigleOutputFolder = new File(reader);
-		System.out.println("Path to save output file");
-		reader = sc.nextLine()+".csv";
-		File csvOutputFile= new File(reader);
+		System.out.println("Path to save output files");
+		reader = sc.nextLine();
+		String csvOutputPath = reader + "\\output.csv";
+		File csvOutputFile= new File(csvOutputPath);
 		Records r = new Records();
 		r.CSV2Records(wigleOutputFolder);
 		r.toCSV(csvOutputFile);
