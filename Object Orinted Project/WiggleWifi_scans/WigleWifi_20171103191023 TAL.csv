@@ -1,0 +1,4 @@
+WigleWifi-1.4,appRelease=2.25,model=PRO 6,release=6.0,device=PRO6,display=Flyme 6.1.0.0G,board=PRO6,brand=Meizu
+MAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type
+14:ae:db:b8:99:1d,HOME,[WPA2-PSK-CCMP][ESS],1970-01-01 02:00:00,6,-94,32.1055583333333,35.1875416666667,0,5.90158319473267,WIFI
+a4:2b:b0:e0:2f:db,Ar1,[WPA-PSK-CCMP+TKIP][WPA2-PSK-CCMP+TKIP][WPS][ESS],2017-11-03 19:09:11,6,-94,32.1054383333333,35.1875716666667,577.1,5.59999990463257,WIFI
