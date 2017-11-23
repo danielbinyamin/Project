@@ -56,7 +56,6 @@ public class Records {
 					line = br.readLine();	
 					while (line != null){	//for each line, convert it to WigleLine and add it to an array with the same time.
 						if (!line.split(",")[3].contains("70")){
-							System.out.println(line);
 							WigleLine newLine = new WigleLine(line,deviceID);
 							if (PITarr.size()==0 || PITarr.size()<time){	//if it's the first line in file, or this line was written after the last line
 								ArrayList<WigleLine> arrayPerTime = new ArrayList<>();
@@ -162,15 +161,15 @@ public class Records {
 	 */
 	public void toKml(File output) {
 		// The all encapsulating kml element.
-		Kml kml = new Kml();	//KmlFactory.createKml();***
+		Kml kml = new Kml();
 		Document document = kml.createAndSetDocument();
 		int wifiCounter=1;
 		for (SingleRecord singleRecord : _records) {
 			double lat = singleRecord.get_location().getX();
 			double lon = singleRecord.get_location().getY();
 			Date dateType = singleRecord.get_date().getTime();
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");//***explain this
-			SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");//***explain this
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 			String srDate = dateFormat.format(dateType)+"T"+timeFormat.format(dateType)+"Z";
 			String description="";
 			for (Wifi wifi : singleRecord.get_WifiList()) {

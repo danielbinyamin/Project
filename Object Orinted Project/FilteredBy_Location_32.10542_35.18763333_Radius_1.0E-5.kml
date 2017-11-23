@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0">
+    <Document>
+        <Placemark>
+            <name>PRO6</name>
+            <visibility>1</visibility>
+            <open>0</open>
+            <description>Wifi #1
+SSID=GROPPER 2.4 C, MAC=14:cc:20:d0:20:ae, freq=1, signal=-49
+Wifi #1
+SSID=GROPPER 5 C, MAC=14:cc:20:d0:20:af, freq=36, signal=-70
+Wifi #1
+SSID=bz46543473, MAC=14:ae:db:58:9c:45, freq=1, signal=-79
+Wifi #1
+SSID=GROPPER 2.4 D, MAC=f4:f2:6d:9c:85:81, freq=6, signal=-89
+Wifi #1
+SSID=SHABAT, MAC=14:ae:db:a1:62:45, freq=11, signal=-94
+Wifi #1
+SSID=Pelephone, MAC=42503_6791_2099201, freq=0, signal=-113
+</description>
+            <TimeStamp>
+                <when>2017-11-03T18:49:39Z</when>
+            </TimeStamp>
+            <Point>
+                <coordinates>35.1876333333333,32.10542</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark>
+            <name>PRO6</name>
+            <visibility>1</visibility>
+            <open>0</open>
+            <description>Wifi #1
+SSID=GROPPER 2.4 C, MAC=14:cc:20:d0:20:ae, freq=1, signal=-49
+Wifi #1
+SSID=GROPPER 5 C, MAC=14:cc:20:d0:20:af, freq=36, signal=-70
+Wifi #1
+SSID=bz46543473, MAC=14:ae:db:58:9c:45, freq=1, signal=-79
+Wifi #1
+SSID=GROPPER 2.4 D, MAC=f4:f2:6d:9c:85:81, freq=6, signal=-89
+Wifi #1
+SSID=SHABAT, MAC=14:ae:db:a1:62:45, freq=11, signal=-94
+Wifi #1
+SSID=Pelephone, MAC=42503_6791_2099201, freq=0, signal=-113
+</description>
+            <TimeStamp>
+                <when>2017-11-03T18:49:39Z</when>
+            </TimeStamp>
+            <Point>
+                <coordinates>35.1876333333333,32.10542</coordinates>
+            </Point>
+        </Placemark>
+    </Document>
+</kml>

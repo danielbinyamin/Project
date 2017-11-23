@@ -27,7 +27,7 @@ public class TestClass {
 
 	}
 
-	public static void filterByToKML(Scanner sc, Records records) {
+	public static void filterByToKML(Scanner sc, Records records, String pathToSaveFile) {
 		boolean ON = true;
 		while (ON) {
 			//Filter Picking
@@ -36,6 +36,10 @@ public class TestClass {
 			int key = sc.nextInt();
 			//user picks 1,2 or 3. this is saved in "key"
 			//make loop if enter 0(to create many filters
+			
+			String fileName = new String();
+			File filteredRecord;
+			
 			switch (key) {
 			case 0:
 				ON = false;
@@ -51,35 +55,49 @@ public class TestClass {
 				Condition locationCondition = currSingleRec->locationPick.distance(currSingleRec.get_location())<=radius;
 				Records filtByLoc = records.filter(locationCondition);
 				//***set here input path to save KML file.
-				String fileName = "FilteredBy_"+"Location_"+lat+"_"+longt+"_"+"Radius_"+radius+".kml";
-				File filteredRecord = new File(fileName); 
+				fileName = "FilteredBy_"+"Location_"+lat+"_"+longt+"_"+"Radius_"+radius+".kml";
+				filteredRecord = new File(pathToSaveFile + fileName); 
 				filtByLoc.toKml(filteredRecord);
+				System.out.println("Filtered file ready.");
+				System.out.println("Path to filtered file: " + pathToSaveFile);
 				System.out.println("Filtered file ready: " + fileName);
 				break;
 			case 2:/*time*/
-				System.out.println("Enter begging Date (YY-MM-DD)");
-				String date = sc.next();
+				System.out.println("Enter begging Date (YYYY-MM-DD)");
+				String begDay = sc.next();
 				System.out.println("Enter begging Time(HH:MM:SS)");
-				String time = sc.next();
-				Calendar beginDate = StringtoDate(date, time);
-				System.out.println("Enter end Date (YY-MM-DD)");
-				String date2 = sc.next();
+				String begTime = sc.next();
+				Calendar beginDate = StringtoDate(begDay, begTime);
+				System.out.println("beginDate: "+beginDate.toString());
+				System.out.println("Enter end Date (YYYY-MM-DD)");
+				String endDay = sc.next();
 				System.out.println("Enter end Time(HH:MM:SS)");
-				String time2 = sc.next();
-				Calendar endDate = StringtoDate(date2, time2);
-				Condition c2 = s->s.get_date().after(beginDate) && s.get_date().before(endDate);
-				Records FByTime = records.filter(c2);
-				FByTime.toKml(new File("FilteredBy_"+"Date"+".kml"));
-				System.out.println("FilteredBy_"+"Date"+".kml");
-
+				String endTime = sc.next();
+				Calendar endDate = StringtoDate(endDay, endTime);
+				System.out.println("endDate: "+endDate.toString());
+				//Condition timeCondition = currSingleRec->currSingleRec.get_date().after(beginDate) && currSingleRec.get_date().before(endDate);
+				Condition timeCondition = currSingleRec->currSingleRec.get_date().compareTo(beginDate)>=0 && currSingleRec.get_date().compareTo(endDate)<=0;
+				Records filtByTime = records.filter(timeCondition);
+				//***set here input path to save KML file.
+				fileName = "FilteredBy_"+"Date"+".kml";
+				filteredRecord = new File(pathToSaveFile + "\\" + fileName); 
+				filtByTime.toKml(filteredRecord);
+				System.out.println("Filtered file ready.");
+				System.out.println("Path to filtered file: " + pathToSaveFile);
+				System.out.println("Filtered file ready: " + fileName);
 				break;
 			case 3: /*id*/
 				System.out.println("Enter ID");
 				String id = sc.next();
-				Condition c3 = s->s.get_id().equals(id);
-				Records FById = records.filter(c3);
-				FById.toKml(new File("FilteredBy_"+"ID_"+id+".kml"));
-				System.out.println("Filtered file ready: FilteredBy_"+"ID_"+id+".kml");
+				Condition idCondition = currSingleRec->currSingleRec.get_id().equals(id);
+				Records filtByID = records.filter(idCondition);
+				//***set here input path to save KML file.
+				fileName = "FilteredBy_"+"ID_"+id+".kml";
+				filteredRecord = new File(pathToSaveFile + fileName); 
+				filtByID.toKml(filteredRecord);
+				System.out.println("Filtered file ready.");
+				System.out.println("Path to filtered file: " + pathToSaveFile);
+				System.out.println("Filtered file ready: " + fileName);
 				break;
 			default: break;
 			}
@@ -95,14 +113,15 @@ public class TestClass {
 		File wigleOutputFolder = new File(reader);
 		System.out.println("Path to save output files");
 		reader = sc.nextLine();
-		String csvOutputPath = reader + "\\output.csv";
+		String pathToSaveFile = reader;
+		String csvOutputPath = pathToSaveFile + "\\output.csv";
 		File csvOutputFile= new File(csvOutputPath);
 		Records r = new Records();
 		r.CSV2Records(wigleOutputFolder);
 		r.toCSV(csvOutputFile);
 
 		//function call for filter
-		filterByToKML(sc, r);
+		filterByToKML(sc, r, pathToSaveFile);
 	}
 
 }
