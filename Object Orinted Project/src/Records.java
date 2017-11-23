@@ -14,7 +14,7 @@ import de.micromata.opengis.kml.v_2_2_0.Placemark;
 /**
  * Main class of the project. Represents a set of records scanned. 
  * Each record in the list represents a specific time & location.
- * @author Daniel
+ * @author Daniel & Tal
  *
  */
 public class Records {
@@ -30,8 +30,8 @@ public class Records {
 	}
 
 	/**
-	 * This method turn a directory with WiggleWifi csv's to
-	 * @param dir
+	 * This method turn a directory with WiggleWifi csv's to a Records object.
+	 * @param WiggleWifi directory
 	 */	
 	public void CSV2Records(File dir) {
 		try {
@@ -106,9 +106,9 @@ public class Records {
 
 
 	/**
-	 * This method creates a CSV file from Records object.
-	 * @param output
-	 * @author Daniel
+	 * This method creates a CSV file from Records object. It exports a Records object to a CSV file.
+	 * @param output directory to which the file will be created to.
+	 * @author Daniel & Tal
 	 */
 	public void toCSV(File output) {
 		try {
@@ -147,9 +147,9 @@ public class Records {
 		}
 	}
 	/**
-	 * This method creates a Kml file from Records object.
-	 * @param output
-	 * @author Daniel
+	 * This method creates a KML file from Records object. It exports a Records object to a KML file.
+	 * @param output directory to which the file will be created to.
+	 * @author Daniel & Tal
 	 */
 	public void toKml(File output){
 		// The all encapsulating kml element.
@@ -195,7 +195,7 @@ public class Records {
 	 * This method returns a filtered Records object by the c Condition
 	 * @param c (Condition).
 	 * @return Filtered Records object.
-	 * @author Daniel
+	 * @author Daniel & Tal
 	 */
 	public Records filter(Condition c) {
 		ArrayList<SingleRecord> filterd = new ArrayList<SingleRecord>();

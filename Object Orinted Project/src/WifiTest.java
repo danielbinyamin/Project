@@ -1,7 +1,11 @@
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
+/**
+ * This class is a Junit test class for the Wifi class
+ * @author Daniel
+ *
+ */
 public class WifiTest {
 
 	@Test

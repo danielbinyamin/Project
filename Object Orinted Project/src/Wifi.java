@@ -1,7 +1,7 @@
 
 /**
  * This class represents a single Wifi scan.
- * it implements Comparable in a way that will sort by signal strength
+ * it implements Comparable in a way that will sort by signal strength.
  * @author Daniel
  *
  */

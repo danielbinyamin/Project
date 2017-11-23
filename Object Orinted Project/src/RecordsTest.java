@@ -6,7 +6,11 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 import org.junit.Test;
-
+/**
+ * This class is a Junit test class for the Records class
+ * @author Tal
+ *
+ */
 public class RecordsTest {
 
 	@Test
@@ -72,9 +76,9 @@ public class RecordsTest {
 	@Test
 	public void testToCSV() {
 		Records r = new Records();
-		File file = new File("C:/wigle/testEx1/test");
+		File file = new File("C:/wigle/testEx1/test");//hardcoded path. need to fix
 		r.CSV2Records(file);
-		File file2 = new File("C:/wigle/testEx1/test/output.csv");
+		File file2 = new File("C:/wigle/testEx1/test/output.csv");//hardcoded path. need to fix
 		r.toCSV(file2);
 		try{
 			BufferedReader br = new BufferedReader(new FileReader(file2));
@@ -90,11 +94,11 @@ public class RecordsTest {
 	@Test
 	public void testToKml() {
 		Records r = new Records();
-		File file = new File("C:/wigle/testEx1/test");
+		File file = new File("C:/wigle/testEx1/test");//hardcoded path. need to fix
 		r.CSV2Records(file);
-		File file2 = new File("C:/wigle/testEx1/test/output.csv");
+		File file2 = new File("C:/wigle/testEx1/test/output.csv");//hardcoded path. need to fix
 		r.toCSV(file2);
-		File file3 = new File("C:/wigle/testEx1/test/outputKML.kml");
+		File file3 = new File("C:/wigle/testEx1/test/outputKML.kml");//hardcoded path. need to fix
 		r.toKml(file3);
 		//here we need to check if KML is well-formed xml.
 	}

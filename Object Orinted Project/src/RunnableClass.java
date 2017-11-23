@@ -7,13 +7,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
 /**
- * This class is the main executable class
- * TODO: Need to test filterByToKml!
- * 
- *
+ * This class is the main executable class.
+ * from here we:
+ * 1) pick our directory to work with.
+ * 2) export out final CSV
+ * 3) filter our final CSV to a KML 
  */
-public class TestClass {
+public class RunnableClass {
 
+	
 	public static Calendar StringtoDate(String date, String time) {
 		String[] datearr = date.split("-");
 		String[] timearr = time.split(":");
@@ -29,6 +31,14 @@ public class TestClass {
 
 	}
 
+	/**
+	 * This function lets the user pick how he would like to filter his main CSV to a filtered KML file.
+	 * user can filter by:
+	 * time, location and id.
+	 * @param sc - input from user.
+	 * @param records - the records object (represents the main CSV)
+	 * @param pathToSaveFile - path to save the filtered kml's
+	 */
 	public static void filterByToKML(Scanner sc, Records records, String pathToSaveFile) {
 		boolean ON = true;
 		while (ON) {
@@ -47,12 +57,12 @@ public class TestClass {
 				ON = false;
 				break;
 			case 1:/*location*/
-				System.out.println("Enter Latitude");
+				System.out.println("Enter Latitude:");
 				double lat = sc.nextDouble();
-				System.out.println("Enter Longitude");
+				System.out.println("Enter Longitude:");
 				double longt = sc.nextDouble();
 				Point2D locationPick = new Point2D.Double(lat,longt);
-				System.out.println("Enter radius");
+				System.out.println("Enter radius:");
 				double radius = sc.nextDouble();	//***
 				Condition locationCondition = currSingleRec->locationPick.distance(currSingleRec.get_location())<=radius;
 				Records filtByLoc = records.filter(locationCondition);
@@ -65,14 +75,14 @@ public class TestClass {
 				System.out.println("Filtered file ready: " + fileName);
 				break;
 			case 2:/*time*/
-				System.out.println("Enter begging Date (YYYY-MM-DD)");
+				System.out.println("Enter begging Date (YYYY-MM-DD):");
 				String begDay = sc.next();
-				System.out.println("Enter begging Time(HH:MM:SS)");
+				System.out.println("Enter begging Time(HH:MM:SS):");
 				String begTime = sc.next();
 				Calendar beginDate = StringtoDate(begDay, begTime);
-				System.out.println("Enter end Date (YYYY-MM-DD)");
+				System.out.println("Enter end Date (YYYY-MM-DD):");
 				String endDay = sc.next();
-				System.out.println("Enter end Time(HH:MM:SS)");
+				System.out.println("Enter end Time(HH:MM:SS):");
 				String endTime = sc.next();
 				Calendar endDate = StringtoDate(endDay, endTime);
 				//Condition timeCondition = currSingleRec->currSingleRec.get_date().after(beginDate) && currSingleRec.get_date().before(endDate);
@@ -88,7 +98,7 @@ public class TestClass {
 				break;
 			case 3: /*id*/
 				sc.nextLine();
-				System.out.println("Enter ID");
+				System.out.println("Enter ID:");
 				String id = sc.nextLine();
 				Condition idCondition = currSingleRec->currSingleRec.get_id().equals(id);
 				Records filtByID = records.filter(idCondition);
@@ -109,17 +119,17 @@ public class TestClass {
 	public static void main(String[] args) {
 		//create main CSV from wiggleWifi dir
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Path of wiggleWifi output folder: ");
+		System.out.println("Enter Path of your wiggleWifi directory folder: ");
 		String reader = sc.nextLine();
 		File wigleOutputFolder = new File(reader);
-		System.out.println("Path to save output files");
+		System.out.println("Enter the Path to save the output file: ");
 		reader = sc.nextLine();
 		String pathToSaveFile = reader;
 		String csvOutputPath = pathToSaveFile + "\\output.csv";
 		File csvOutputFile= new File(csvOutputPath);
 		Records r = new Records();
-		r.CSV2Records(wigleOutputFolder);
-		r.toCSV(csvOutputFile);
+		r.CSV2Records(wigleOutputFolder);//build r from the WiggleWifi directory
+		r.toCSV(csvOutputFile);//export r to CSV to csvOutputFile directory
 
 		//function call for filter
 		filterByToKML(sc, r, pathToSaveFile);

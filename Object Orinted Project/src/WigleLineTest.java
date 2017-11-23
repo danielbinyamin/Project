@@ -1,7 +1,11 @@
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
+/**
+ * This class is a Junit test class for the WiggleLine class
+ * @author Tal
+ *
+ */
 public class WigleLineTest {
 
 	@Test
@@ -18,7 +22,7 @@ public class WigleLineTest {
 		WigleLine w1 = new WigleLine(line1, "id1");
 		WigleLine w2 = new WigleLine(line2, "id2");
 		w1.compareTo(w2);
-		assertTrue(w1.compareTo(w2)==-1);
+		assertFalse(w1.compareTo(w2)==-1);
 	}
 
 }
