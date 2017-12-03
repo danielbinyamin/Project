@@ -6,6 +6,10 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
+import WeightedCenterPoint.calculatedWifiNode;
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
@@ -33,9 +37,9 @@ public class Records {
 	 * This method turn a directory with WiggleWifi csv's to a Records object.
 	 * @param WiggleWifi directory
 	 */	
-	public void CSV2Records(File dir) {
+	public void CSV2Records(File wigleOutputFolder) {
 		try {
-			File[] listOfFiles = dir.listFiles();
+			File[] listOfFiles = wigleOutputFolder.listFiles();
 			for (File file : listOfFiles) {
 				ArrayList<ArrayList<WigleLine>> PITarr = new ArrayList<>();	//PITarr = array of arrays. each inner array has scans from the same time.
 				if (!file.isDirectory() && file.getName().contains("WigleWifi")){ 	//if you find a valid WiglleWIFI csv file...
@@ -93,7 +97,7 @@ public class Records {
 					String id =  arrayList.get(0).get_id();
 					try{
 						SingleRecord currentRec = new SingleRecord(id, Wifilist,date,lon,lat,alt);
-						this._records.add(currentRec);
+						_records.add(currentRec);
 					}
 					catch (Exception e){System.out.println("EXCEPTION: "+e);}
 				}
@@ -104,7 +108,6 @@ public class Records {
 		}
 	}
 
-
 	/**
 	 * This method creates a CSV file from Records object. It exports a Records object to a CSV file.
 	 * @param output directory to which the file will be created to.
@@ -113,7 +116,7 @@ public class Records {
 	public void toCSV(File output) {
 		try {
 			//add headers to CSV file
-			FileWriter writer = new FileWriter(output);
+			FileWriter writer = new FileWriter(output + "\\output.csv");
 			PrintWriter outs = new PrintWriter(writer);
 			outs.print("Time,id,Lat,Lon,Alt,Num_Of_Networks");
 			for (int i = 1; i < 11; i++) {
@@ -186,7 +189,7 @@ public class Records {
 			System.out.println("Error at kml marshal. Exception: \n"+e);
 		}
 	}
-	
+
 	public ArrayList<SingleRecord> getSingleRecordsList(){
 		return _records;
 	}
@@ -205,5 +208,4 @@ public class Records {
 		}
 		return new Records(filterd);
 	}
-
 }
