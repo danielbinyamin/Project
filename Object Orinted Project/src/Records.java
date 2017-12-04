@@ -6,10 +6,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
-import WeightedCenterPoint.calculatedWifiNode;
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
