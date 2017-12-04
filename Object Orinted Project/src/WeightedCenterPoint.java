@@ -12,6 +12,10 @@ public class WeightedCenterPoint{
 	}
 	
 	public void fillData (Records records, String mac){
+		_weight = new ArrayList<>();
+		_wLat = new ArrayList<>();
+		_wLon = new ArrayList<>();
+		_wAlt = new ArrayList<>();
 		ArrayList<SingleRecord> srList = records.getSingleRecordsList();
 		for (SingleRecord singleRecord : srList) {
 			ArrayList<Wifi> currWifis = singleRecord.get_WifiList();

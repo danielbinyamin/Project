@@ -87,4 +87,20 @@ public class programCore {
 		String msgToShow = "("+lat+","+lon+","+alt+")";
 		return msgToShow;
 	}
+	
+	public String locateUser (String pathToNewWiggleFile){
+		Records tempRecords = new Records();
+		tempRecords.CSV2Records(new File(pathToNewWiggleFile));
+		ArrayList<SingleRecord> srList = _records.getSingleRecordsList();
+		for (SingleRecord singleRecord : srList) {
+			
+		}
+		WeightedCenterPoint WCP = new WeightedCenterPoint(tempRecords, mac);
+		Point2D location = WCP.getLocation();
+		double lat = location.getX();
+		double lon = location.getY();
+		double alt = WCP.getAlt();
+		String msgToShow = "("+lat+","+lon+","+alt+")";
+		return msgToShow;
+	}
 }

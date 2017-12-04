@@ -47,8 +47,8 @@ public class consoleUI {
 		while (ON) {
 			String msgToShow=new String();
 			//Filter Picking
-			System.out.println("Pick filter. 0 to end program ");
-			System.out.println("1: by location\n2: by time\n3: by ID");
+			System.out.println("Pick option. 0 to end program ");
+			System.out.println("1: filter by location\n2: filter by time\n3: filter by ID\n4: locate router\n5: locate me");
 			
 			try{
 				choice = sc.nextInt();
@@ -108,8 +108,10 @@ public class consoleUI {
 				break;
 
 			case locateUser:
-				//TODO
-				break;
+				System.out.println("Create a new Wiggle-Wifi file and enter path of it.");
+				String newWiggle = sc.nextLine();
+				msgToShow = _program.locateUser(newWiggle);
+				System.out.println(msgToShow);	//***maybe it is better to create an KML?				break;
 			default:
 				System.out.println("Not valid input. Please Try Again.");
 			}
