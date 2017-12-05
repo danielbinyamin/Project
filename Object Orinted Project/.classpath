@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="/home/tal/eclipse-workspace/ExternalJars/OOPproject/jaxb-api-2.1.jar"/>
 	<classpathentry kind="lib" path="/home/tal/eclipse-workspace/ExternalJars/OOPproject/jaxb-impl-2.1.17.jar"/>
 	<classpathentry kind="lib" path="/home/tal/eclipse-workspace/ExternalJars/OOPproject/jsr173_api-1.0.jar"/>
+	<classpathentry kind="lib" path="/home/tal/eclipse-workspace/ExternalJars/OOPproject/jars.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
