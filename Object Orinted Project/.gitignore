@@ -1,3 +1,4 @@
 *.jar
 *.classpath
 /.gitignore.txt
+/bin/
