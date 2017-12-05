@@ -111,7 +111,8 @@ public class consoleUI {
 				System.out.println("Create a new Wiggle-Wifi file and enter path of it.");
 				String newWiggle = sc.nextLine();
 				msgToShow = _program.locateUser(newWiggle);
-				System.out.println(msgToShow);	//***maybe it is better to create an KML?				break;
+				System.out.println(msgToShow);	//***maybe it is better to create an KML?
+				
 			default:
 				System.out.println("Not valid input. Please Try Again.");
 			}

@@ -95,7 +95,7 @@ public class programCore {
 		for (SingleRecord singleRecord : srList) {
 			
 		}
-		WeightedCenterPoint WCP = new WeightedCenterPoint(tempRecords, mac);
+		WeightedCenterPoint WCP = new WeightedCenterPoint(tempRecords, "");
 		Point2D location = WCP.getLocation();
 		double lat = location.getX();
 		double lon = location.getY();
