@@ -39,9 +39,10 @@ public class consoleUI {
 	 * @param msgToShow - output to view on GUI.
 	 * @param choice - which of the above functions.
 	 * @param fileName - name of the output file.
+	 * @throws Exception if trying to locate user by unknown MAC.
 	 */
 
-	public void menu(){
+	public void menu() throws Exception{
 		boolean ON = true;
 		int choice=-1;
 		while (ON) {
@@ -108,9 +109,19 @@ public class consoleUI {
 				break;
 
 			case locateUser:
-				System.out.println("Create a new Wiggle-Wifi file and enter path of it.");
-				String newWiggle = sc.nextLine();
-				msgToShow = _program.locateUser(newWiggle);
+				System.out.println("Enter MAC");
+				String mac1 = sc.next();
+				System.out.println("Enter its signal");
+				int signal1 = sc.nextInt();
+				System.out.println("Enter MAC");
+				String mac2 = sc.next();
+				System.out.println("Enter its signal");
+				int signal2 = sc.nextInt();
+				System.out.println("Enter MAC");
+				String mac3 = sc.next();
+				System.out.println("Enter its signal");
+				int signal3 = sc.nextInt();
+				msgToShow = _program.locateUser(mac1, signal1, mac2, signal2, mac3, signal3);
 				System.out.println(msgToShow);	//***maybe it is better to create an KML?
 				
 			default:
@@ -120,7 +131,7 @@ public class consoleUI {
 		sc.close();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		consoleUI CUI = new consoleUI();
 		CUI.menu();
 	}

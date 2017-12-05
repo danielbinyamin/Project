@@ -57,7 +57,7 @@ public class programCore {
 		String msgToShow = createFilteredFile(fileName, filtByLoc);
 		return msgToShow;
 	}
-	
+
 	public String filterByTime (String begDay, String begTime, String endDay, String endTime){
 		Calendar beginDate = StringtoDate(begDay, begTime);
 		Calendar endDate = StringtoDate(endDay, endTime);
@@ -67,7 +67,7 @@ public class programCore {
 		String msgToShow = createFilteredFile(fileName, filtByTime);
 		return msgToShow;
 	}
-	
+
 	public String filterByID (String id){
 		//***sc.nextLine();
 		Condition idCondition = currSingleRec->currSingleRec.get_id().equals(id);
@@ -77,9 +77,9 @@ public class programCore {
 		String msgToShow = createFilteredFile(fileName, filtByID);
 		return msgToShow;
 	}
-	
+
 	public String locateRouter (String mac){
-		WeightedCenterPoint WCP = new WeightedCenterPoint(_records, mac);
+		locateRouterAlgo WCP = new locateRouterAlgo(_records, mac);
 		Point2D location = WCP.getLocation();
 		double lat = location.getX();
 		double lon = location.getY();
@@ -87,20 +87,20 @@ public class programCore {
 		String msgToShow = "("+lat+","+lon+","+alt+")";
 		return msgToShow;
 	}
-	
-	public String locateUser (String pathToNewWiggleFile){
-		Records tempRecords = new Records();
-		tempRecords.CSV2Records(new File(pathToNewWiggleFile));
-		ArrayList<SingleRecord> srList = _records.getSingleRecordsList();
-		for (SingleRecord singleRecord : srList) {
-			
+
+	public String locateUser (String mac1, int Signal1, String mac2, int Signal2, String mac3, int Signal3) throws Exception{
+		try{
+			findUserAlgo userLocation = new findUserAlgo(_records, mac1, Signal1, mac2, Signal2, mac3, Signal3);
+			Point2D location = userLocation.getLocation();
+			double lat = location.getX();
+			double lon = location.getY();
+			double alt = userLocation.getAlt();
+			String msgToShow = "("+lat+","+lon+","+alt+")";
+			return msgToShow;
 		}
-		WeightedCenterPoint WCP = new WeightedCenterPoint(tempRecords, "");
-		Point2D location = WCP.getLocation();
-		double lat = location.getX();
-		double lon = location.getY();
-		double alt = WCP.getAlt();
-		String msgToShow = "("+lat+","+lon+","+alt+")";
-		return msgToShow;
+		catch(Exception e){
+			/*no need to throw exception as "userLocation" will throw */
+			return null;
+		}
 	}
 }
