@@ -74,7 +74,7 @@ public class programCore {
 		Records filtByID = _records.filter(idCondition);
 		//***set here input path to save KML file.
 		String fileName = "FilteredByID_"+id+".kml";
-		String msgToShow = createFilteredFile(fileName, filtByID);
+		String msgToShow = createFilteredFile(fileName, filtByID);//
 		return msgToShow;
 	}
 	
