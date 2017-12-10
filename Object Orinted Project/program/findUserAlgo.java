@@ -155,6 +155,7 @@ public class findUserAlgo{
 			throw(new Exception("\nThis MAC is has never been recorded.\nIt is not possible to tell your location."));
 		}
 	}
+	
 	//methods
 	public Point2D getLocation(){
 		_wLatSum = _wLonSum = _wAltSum = _weight = 0;
