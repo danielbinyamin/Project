@@ -56,7 +56,7 @@ public class programCore {
 	 * @return String represents a message for the user with the name and location of the file.
 	 */
 	public String createFilteredFile(String fileName, Records records){
-		File filteredRecord = new File(_outputDir + "\\" + fileName); 
+		File filteredRecord = new File(_outputDir + "/" + fileName); 
 		records.toKml(filteredRecord);
 		return "Filtered file ready.\nPath to filtered file: " + _outputDir + "\nFiltered file ready: " + fileName;
 	}
@@ -101,10 +101,8 @@ public class programCore {
 	 * @return String represents a message for the user with the name and location of the file.
 	 */
 	public String filterByID (String id){
-		//***sc.nextLine();
-		Condition idCondition = currSingleRec->currSingleRec.get_id().equals(id);
+		Condition idCondition = currSingleRec->currSingleRec.get_id().toLowerCase().equals(id.toLowerCase());
 		Records filtByID = _records.filter(idCondition);
-		//***set here input path to save KML file.
 		String fileName = "FilteredByID_"+id+".kml";
 		String msgToShow = createFilteredFile(fileName, filtByID);///
 		return msgToShow;

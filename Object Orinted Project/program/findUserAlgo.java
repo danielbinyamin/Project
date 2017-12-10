@@ -165,7 +165,6 @@ public class findUserAlgo{
 			_wAltSum = _wAltSum + _linesOfData.get(lineOfData)._wAlt;
 			_weight = _weight + _linesOfData.get(lineOfData)._pi;
 		}
-		System.out.println("lat="+_wLatSum / _weight+" lon="+_wLonSum / _weight);//***
 		return (new Point2D.Double(_wLatSum / _weight, _wLonSum / _weight));
 	}
 

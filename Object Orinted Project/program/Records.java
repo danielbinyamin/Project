@@ -114,7 +114,7 @@ public class Records {
 	public void toCSV(File output) {
 		try {
 			//add headers to CSV file
-			FileWriter writer = new FileWriter(output + "\\output.csv");
+			FileWriter writer = new FileWriter(output + "/output.csv");//***\\output.csv was changed to /output.csv
 			PrintWriter outs = new PrintWriter(writer);
 			outs.print("Time,id,Lat,Lon,Alt,Num_Of_Networks");
 			for (int i = 1; i < 11; i++) {
@@ -177,7 +177,6 @@ public class Records {
 			placeMark.setDescription(description);
 			placeMark.createAndSetTimeStamp().setWhen(srDate);
 			placeMark.createAndSetPoint().addToCoordinates(lon,lat);
-			//placemark.setStyleUrl("styles.kml#jugh_style");
 			document.addToFeature(placeMark);
 			kml.setFeature(document);	// <-- placemark is registered at kml ownership.
 			wifiCounter++;

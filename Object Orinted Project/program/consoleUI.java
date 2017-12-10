@@ -1,5 +1,4 @@
 package program;
-import java.io.File;
 import java.util.Scanner;
 
 /**
@@ -67,10 +66,8 @@ public class consoleUI {
 				System.out.println(e);
 				break;
 			}
-			//user picks 1,2 or 3. this is saved in "key"
+			//user picks 1,2 or 3. this is saved in "choice"
 			//make loop if enter 0(to create many filters
-			String fileName = new String();
-			File filteredRecord;
 			switch (choice) {
 
 			case (exit):
