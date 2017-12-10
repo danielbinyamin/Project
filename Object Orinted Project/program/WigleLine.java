@@ -1,3 +1,4 @@
+package program;
 /**
  * This class represents a a specific Wifi network scan as captured by the WiggleWifi app
  * @author Tal

@@ -1,6 +1,7 @@
+package junits;
 import static org.junit.Assert.*;
-
 import org.junit.Test;
+import program.*;
 /**
  * This class is a Junit test class for the Wifi class
  * @author Daniel

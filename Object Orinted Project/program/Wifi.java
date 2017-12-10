@@ -1,3 +1,4 @@
+package program;
 
 /**
  * This class represents a single Wifi scan.

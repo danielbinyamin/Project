@@ -1,8 +1,10 @@
+package junits;
 import static org.junit.Assert.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Calendar;
 import org.junit.Test;
+import program.*;
 
 /**
  * This class is a Junit test class for the SingleRecords class
