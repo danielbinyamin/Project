@@ -10,17 +10,15 @@ import java.lang.Math;
 
 /**
  * This class is the main executable class.
- * from here we:
- * 1) pick our directory to work with.
- * 2) export out final CSV
- * 3) filter our final CSV to a KML 
+ * Each UI communicates with an instance of this class and gets the wanted output for any method.
  */
 public class programCore {
 
 	//members
 	private File _wigleDir, _outputDir;
 	private Records _records;
-
+	
+	//constructors
 	public programCore(String wigleDir, String outputDir){
 		_wigleDir = new File(wigleDir);
 		_outputDir = new File(outputDir);
@@ -28,7 +26,14 @@ public class programCore {
 		_records.CSV2Records(_wigleDir);
 		_records.toCSV(_outputDir);
 	}
-
+	
+	//methods
+	/**
+	 * This function converts a string to date in the right format for KML files.
+	 * @param date - a string represents the date to convert.
+	 * @param time - a string represents the time to convert.
+	 * @return Claendar object.
+	 */
 	public static Calendar StringtoDate(String date, String time) {
 		String[] datearr = date.split("-");
 		String[] timearr = time.split(":");
@@ -42,13 +47,26 @@ public class programCore {
 		c.set(year, month-1,day,hour,minutes,sec);
 		return c;
 	}
-
+	
+	/**
+	 * This function creates a new KML file.
+	 * @param fileName - a string represents name of the file.
+	 * @param records - Records object that has all the data for the KML file.
+	 * @return String represents a message for the user with the name and location of the file.
+	 */
 	public String createFilteredFile(String fileName, Records records){
 		File filteredRecord = new File(_outputDir + "\\" + fileName); 
 		records.toKml(filteredRecord);
 		return "Filtered file ready.\nPath to filtered file: " + _outputDir + "\nFiltered file ready: " + fileName;
 	}
-
+	
+	/**
+	 * This function filters SingleRecord objects by location.
+	 * @param lat - latitude .
+	 * @param lon - longitude .
+	 * @param radius - radius to scan. 
+	 * @return String represents a message for the user with the name and location of the file.
+	 */
 	public String filterByLocation(double lat, double lon, double radius){
 		Point2D locationPick = new Point2D.Double(lat,lon);
 		Condition locationCondition = currSingleRec->locationPick.distance(currSingleRec.get_location())<=radius;
@@ -58,6 +76,14 @@ public class programCore {
 		return msgToShow;
 	}
 
+	/**
+	 * This function filters SingleRecord objects by time.
+	 * @param begDay - beginning day to scan.
+	 * @param begTime - beginning time to scan.
+	 * @param endDay - end day to scan. 
+	 * @param endTime - end time to scan.
+	 * @return String represents a message for the user with the name and location of the file.
+	 */
 	public String filterByTime (String begDay, String begTime, String endDay, String endTime){
 		Calendar beginDate = StringtoDate(begDay, begTime);
 		Calendar endDate = StringtoDate(endDay, endTime);
@@ -68,6 +94,11 @@ public class programCore {
 		return msgToShow;
 	}
 
+	/**
+	 * This function filters SingleRecord objects by ID.
+	 * @param id - ID to look for.
+	 * @return String represents a message for the user with the name and location of the file.
+	 */
 	public String filterByID (String id){
 		//***sc.nextLine();
 		Condition idCondition = currSingleRec->currSingleRec.get_id().equals(id);
@@ -78,6 +109,11 @@ public class programCore {
 		return msgToShow;
 	}
 
+	/**
+	 * This function calls other function to estimate the location of a router.
+	 * @param mac - MAC address to locate.
+	 * @return String represents a message for the user with the estimated location.
+	 */
 	public String locateRouter (String mac){
 		locateRouterAlgo WCP = new locateRouterAlgo(_records, mac);
 		Point2D location = WCP.getLocation();
@@ -88,6 +124,16 @@ public class programCore {
 		return msgToShow;
 	}
 
+	/**
+	 * This function calls other function to estimate the location of a user.
+	 * @param mac1 - MAC address located by user.
+	 * @param Signal1 - signal of the above MAC.
+	 * @param mac2 - MAC address located by user.
+	 * @param Signal2 - signal of the above MAC.
+	 * @param mac3 - MAC address located by user.
+	 * @param Signal3 - signal of the above MAC.
+	 * @return String represents a message for the user with the estimated location.
+	 */
 	public String locateUser (String mac1, int Signal1, String mac2, int Signal2, String mac3, int Signal3) throws Exception{
 		try{
 			findUserAlgo userLocation = new findUserAlgo(_records, mac1, Signal1, mac2, Signal2, mac3, Signal3);

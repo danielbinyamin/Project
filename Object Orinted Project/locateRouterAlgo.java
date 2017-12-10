@@ -1,16 +1,26 @@
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+/**
+ * This class represents the implementation of the finding router location algorithm.
+ * @author Tal
+ */
 public class locateRouterAlgo{
-
+	//members
 	private ArrayList<Double> _weight, _wLat, _wLon, _wAlt;
 	double _wLatSum, _wLonSum, _wAltSum;
 	
+	//constructors
 	public locateRouterAlgo(Records records, String mac){
 		fillData(records, mac);
 		calcWeights();
 	}
 	
+	/**
+	 * This function initiates all data members.
+	 * @param records - Records object.
+	 * @param mac - MAC address to look for.
+	 */
 	public void fillData (Records records, String mac){
 		_weight = new ArrayList<>();
 		_wLat = new ArrayList<>();
@@ -35,6 +45,9 @@ public class locateRouterAlgo{
 		}
 	}
 	
+	/**
+	 * This function calculates all weights needed to estimate location.
+	 */
 	public void calcWeights(){
 		double weightSum=0;
 		_wLatSum = _wLonSum = _wAltSum = 0;

@@ -1,10 +1,13 @@
-
 import java.awt.geom.Point2D;
 import java.security.Signature;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+/**
+ * This class represents the implementation of the finding user location algorithm.
+ * @author Tal
+ */
 public class findUserAlgo{
 	//globals
 	public static final int minDiff = 3;
@@ -15,10 +18,15 @@ public class findUserAlgo{
 	public static final int power = 2;
 	public static final int numOfDataLinesToCheck = 3;
 	//members
+	/**
+	 * This private class represents the data needed for the algorithm for every wifi network.
+	 */
 	private class dataPerWifi{
+		//members
 		private int _signal, _difference;
 		private double _weight;
-
+		
+		//constructors
 		public dataPerWifi(int nodeSignal, int mainSignal){
 			_signal = nodeSignal;
 			if (_signal <= noSignal){
@@ -30,11 +38,16 @@ public class findUserAlgo{
 			}
 			_weight = norm / (Math.pow(_difference, sigDiff) * Math.pow(mainSignal, power));
 		}
-
+		
+		//methods
 		public double getWeight(){
 			return _weight;
 		}
 	}
+	
+	/**
+	 * This private class represents a single line in the table (like in Boaz's example).
+	 */
 	private class lineOfData implements Comparable<lineOfData>{
 		private SingleRecord _singleRecord;
 		private dataPerWifi _mac1, _mac2, _mac3;

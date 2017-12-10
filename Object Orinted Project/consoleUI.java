@@ -1,11 +1,16 @@
-import java.awt.geom.Point2D;
 import java.io.File;
-import java.util.Calendar;
 import java.util.Scanner;
 
-
+/**
+ * This class is a Console User-Interface for the program.
+ * It has a "programCore" instance as a data member.
+ * The user communicates "programCore" via this UI.
+ */
 public class consoleUI {
 
+	//data members
+	public static Scanner _sc;
+	private programCore _program;
 	//globals
 	public final static int exit = 0;
 	public final static int filterByLocation = 1;
@@ -13,21 +18,24 @@ public class consoleUI {
 	public final static int filterByID = 3;
 	public final static int locateRouter = 4;
 	public final static int locateUser = 5;
-	public static Scanner sc;
-	private programCore _program;
-	
 
+	//constructors
 	public consoleUI(){
 		init();
 	}
 
+	/**
+	 * This method initiates the class by input values from user.
+	 * @param wigleDir WifleWifi files directory.
+	 * @param outputDir Path to save the output file.
+	 */	
 	public void init(){
 		//create main CSV from wiggleWifi dir
-		sc = new Scanner(System.in);
+		_sc = new Scanner(System.in);
 		System.out.println("Enter Path of your wiggleWifi directory folder: ");
-		String wigleDir = sc.nextLine();
+		String wigleDir = _sc.nextLine();
 		System.out.println("Enter the Path to save the output file: ");
-		String outputDir = sc.nextLine();
+		String outputDir = _sc.nextLine();
 		_program = new programCore(wigleDir, outputDir);
 	}
 
@@ -35,7 +43,7 @@ public class consoleUI {
 	 * This function lets the user pick what function he would like to execute on his main CSV file.
 	 * user can choose:
 	 * filter by location, filter by time, filter by id, locate a router, or locate himself.
-	 * @param sc - input from user.
+	 * @param _sc - input from user.
 	 * @param msgToShow - output to view on GUI.
 	 * @param choice - which of the above functions.
 	 * @param fileName - name of the output file.
@@ -52,7 +60,7 @@ public class consoleUI {
 			System.out.println("1: filter by location\n2: filter by time\n3: filter by ID\n4: locate router\n5: locate me");
 			
 			try{
-				choice = sc.nextInt();
+				choice = _sc.nextInt();
 			}
 			catch(Exception e){
 				System.out.println(e);
@@ -71,56 +79,56 @@ public class consoleUI {
 
 			case (filterByLocation):
 				System.out.println("Enter Latitude:");
-			double lat = sc.nextDouble();
+			double lat = _sc.nextDouble();
 			System.out.println("Enter Longitude:");
-			double longt = sc.nextDouble();
+			double longt = _sc.nextDouble();
 			System.out.println("Enter radius:");
-			double radius = sc.nextDouble();
+			double radius = _sc.nextDouble();
 			msgToShow = _program.filterByLocation(lat, longt, radius);
 			System.out.println(msgToShow);
 			break;
 
 			case filterByTime:
 				System.out.println("Enter begging Date (YYYY-MM-DD):");
-				String begDay = sc.next();
+				String begDay = _sc.next();
 				System.out.println("Enter begging Time(HH:MM:SS):");
-				String begTime = sc.next();
+				String begTime = _sc.next();
 				System.out.println("Enter end Date (YYYY-MM-DD):");
-				String endDay = sc.next();
+				String endDay = _sc.next();
 				System.out.println("Enter end Time(HH:MM:SS):");
-				String endTime = sc.next();
+				String endTime = _sc.next();
 				msgToShow = _program.filterByTime(begDay, begTime, endDay, endTime);
 				System.out.println(msgToShow);
 				break;
 
 			case filterByID:
-				//***sc.nextLine();
+				_sc.nextLine();
 				System.out.println("Enter ID:");
-				String id = sc.nextLine();
+				String id = _sc.nextLine();
 				msgToShow = _program.filterByID(id);
 				System.out.println(msgToShow);
 				break;
 
 			case locateRouter:
 				System.out.println("Enter MAC");
-				String mac = sc.next();
+				String mac = _sc.next();
 				msgToShow = _program.locateRouter(mac);
 				System.out.println(msgToShow);	//***maybe it is better to create an KML?
 				break;
 
 			case locateUser:
 				System.out.println("Enter MAC");
-				String mac1 = sc.next();
+				String mac1 = _sc.next();
 				System.out.println("Enter its signal");
-				int signal1 = sc.nextInt();
+				int signal1 = _sc.nextInt();
 				System.out.println("Enter MAC");
-				String mac2 = sc.next();
+				String mac2 = _sc.next();
 				System.out.println("Enter its signal");
-				int signal2 = sc.nextInt();
+				int signal2 = _sc.nextInt();
 				System.out.println("Enter MAC");
-				String mac3 = sc.next();
+				String mac3 = _sc.next();
 				System.out.println("Enter its signal");
-				int signal3 = sc.nextInt();
+				int signal3 = _sc.nextInt();
 				msgToShow = _program.locateUser(mac1, signal1, mac2, signal2, mac3, signal3);
 				System.out.println(msgToShow);	//***maybe it is better to create an KML?
 				
@@ -128,9 +136,12 @@ public class consoleUI {
 				System.out.println("Not valid input. Please Try Again.");
 			}
 		}
-		sc.close();
+		_sc.close();
 	}
 
+	/**
+	 * main class of the program.
+	 */	
 	public static void main(String[] args) throws Exception {
 		consoleUI CUI = new consoleUI();
 		CUI.menu();
