@@ -136,7 +136,6 @@ public class consoleUI {
 		}
 		_sc.close();
 	}
-
 	/**
 	 * main class of the program.
 	 */	
