@@ -1,12 +1,12 @@
-*About*
+*About*/n
 This is an ongoing project on our Object Oriented course in Ariel university.
 Authors: Daniel Binyamin & Tal Gropper.
 This project recives variouse scans captured from the WiggleWifi android app and puts together a main csv file which joins all this information into one. We have implemented an option to filter the main CSV by various choices and export this filter to a KML file which can be viewed on Google Earth.
 
-*Run Instrucios*
-This program is going to have two UIs: GUI and Console-UI.
-For now, only Console-UI has been implemented.
-To run this project you will need to run one of the above UIs.
+*Run Instrucios*/n
+The program now has only console-UI.
+In a few weeks a GUI will be added.
+For now, To run the program you will need to run "consoleUI" class.
 Once run, you will be asked to enter the path to your WiggleWifi scans.
 Then you will be asked to enter the path to which you want your output.csv file to be created to.
 At this point you have an output.csv file ready at the directory you chose.
@@ -17,8 +17,7 @@ Now you will have a few options:
 you can end by entering 0.
 
 
-The structure of the code is as follows:
-
+*Code Structure*/n
 - A WiggleLine class which represents a single network scan captured by the WiggleWifi app. This class is used to help us create our final CSV.
 - A Wifi class with all network veriables. 
 - A SingleRecord class which represents a single scan at a specific time & place(point on the map) which includes information regarding that scan (Wifi list, location, time etc...) .
