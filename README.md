@@ -19,20 +19,14 @@ you can end by entering 0.
 
 The structure of the code is as follows:
 
--A WiggleLine class which represents a single network scan captured by the WiggleWifi app. This class is used to help us create our final CSV.
-
--A Wifi class with all network veriables. 
-
-- A singleRecord class which represents a single scan at a specific time & place(point on the map) which includes information regarding that scan (Wifi list, location, time etc...) .
-
+- A WiggleLine class which represents a single network scan captured by the WiggleWifi app. This class is used to help us create our final CSV.
+- A Wifi class with all network veriables. 
+- A SingleRecord class which represents a single scan at a specific time & place(point on the map) which includes information regarding that scan (Wifi list, location, time etc...) .
 - A Records class which includes a list of SingleRecords. This is our main class which we work with. It has many of our basic methods which we use to export to KML and CSV.
-
 - A console-UI class.
-
-- A class represents.****
-
-
--A main executable class called RunnableClass.
+- A program-core class which is the "brain" of the program.
+- A locate-Router-Algo which take care of calculationg the estimated location of a given MAC address.
+- A find-user-algo which take care of calculationg the estimated location of a the user itself by given wifi networks and their values at a specific location.
 
 To handle the KML types we used the JAK (Java api for KML) api which is part of de.micromata projects. We found a version of this api in .jar format and used it because it is more comfertable to work with as opposed to open source. We picked this api because after some research online we came to conclusion that this api is the one vastly used and which has the most example.
 For a kick start we used examples from:
