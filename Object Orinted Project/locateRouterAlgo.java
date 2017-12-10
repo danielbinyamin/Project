@@ -1,12 +1,12 @@
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class WeightedCenterPoint{
+public class locateRouterAlgo{
 
 	private ArrayList<Double> _weight, _wLat, _wLon, _wAlt;
 	double _wLatSum, _wLonSum, _wAltSum;
 	
-	public WeightedCenterPoint(Records records, String mac){
+	public locateRouterAlgo(Records records, String mac){
 		fillData(records, mac);
 		calcWeights();
 	}
