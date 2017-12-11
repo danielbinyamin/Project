@@ -1,14 +1,13 @@
 package junits;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import program.*;
+import program.Wifi;
 /**
  * This class is a Junit test class for the Wifi class
  * @author Daniel
  *
  */
 public class WifiTest {
-
 	@Test
 	//tests constructor
 	public void testWifi() {
