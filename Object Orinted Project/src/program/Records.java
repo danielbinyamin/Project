@@ -206,4 +206,9 @@ public class Records {
 		}
 		return new Records(filterd);
 	}
+
+	public boolean isEmpty() {
+		return _records.size()==0;
+	}
+
 }
