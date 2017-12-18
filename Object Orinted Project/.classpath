@@ -2,12 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="C:/Users/danie/Desktop/KML api/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danie/Desktop/KML api/JavaAPIforKml-2.2.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danie/Desktop/KML api/jaxb-api-2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danie/Desktop/KML api/jaxb-impl-2.1.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danie/Desktop/KML api/jsr173_api-1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="/home/tal/eclipse-workspace/ExternalJars/OOPproject/activation-1.1.jar"/>
-	<classpathentry kind="lib" path="/home/tal/eclipse-workspace/ExternalJars/OOPproject/JavaAPIforKml-2.2.0.jar"/>
-	<classpathentry kind="lib" path="/home/tal/eclipse-workspace/ExternalJars/OOPproject/jaxb-api-2.1.jar"/>
-	<classpathentry kind="lib" path="/home/tal/eclipse-workspace/ExternalJars/OOPproject/jaxb-impl-2.1.17.jar"/>
-	<classpathentry kind="lib" path="/home/tal/eclipse-workspace/ExternalJars/OOPproject/jsr173_api-1.0.jar"/>
-	<classpathentry kind="lib" path="/home/tal/eclipse-workspace/ExternalJars/OOPproject/jars.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

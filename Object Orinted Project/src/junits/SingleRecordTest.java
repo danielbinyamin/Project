@@ -1,4 +1,5 @@
 package junits;
+
 import static org.junit.Assert.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
