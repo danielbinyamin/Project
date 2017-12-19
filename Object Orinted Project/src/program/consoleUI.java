@@ -1,4 +1,5 @@
 package program;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -18,6 +19,8 @@ public class consoleUI {
 	public final static int filterByID = 3;
 	public final static int locateRouter = 4;
 	public final static int locateUser = 5;
+	public final static int findAllMACsLocation = 6;
+	public final static int findUserLocation = 7;
 
 	//constructors
 	public consoleUI(){
@@ -58,7 +61,7 @@ public class consoleUI {
 			//Filter Picking
 			System.out.println("Pick option. 0 to end program ");
 			System.out.println("1: filter by location\n2: filter by time\n3: filter by ID\n4: locate router\n5: locate me");
-			
+
 			try{
 				choice = _sc.nextInt();
 			}
@@ -129,7 +132,20 @@ public class consoleUI {
 				int signal3 = _sc.nextInt();
 				msgToShow = _program.locateUser(mac1, signal1, mac2, signal2, mac3, signal3);
 				System.out.println(msgToShow);	//***maybe it is better to create an KML?
-				
+				break;
+
+			case findAllMACsLocation:
+				System.out.println("Enter path to file");
+				String loadFrom = _sc.next();
+				ArrayList<String> allTable = _program.findAllMACsLocation(loadFrom);
+				for (String line : allTable) {
+					System.out.println(line);
+				}
+				break;
+
+			case findUserLocation:
+				//
+
 			default:
 				System.out.println("Not valid input. Please Try Again.");
 			}

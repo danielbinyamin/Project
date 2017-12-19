@@ -1,12 +1,16 @@
 package program;
 
 import java.awt.geom.Point2D;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.Scanner;
+
+import org.omg.stub.java.rmi._Remote_Stub;
+
+import de.micromata.opengis.kml.v_2_2_0.atom.Link;
+
 import java.lang.Math;
 
 /**
@@ -18,16 +22,17 @@ public class programCore {
 	//members
 	private File _wigleDir, _outputDir;
 	private Records _records;
-	
+
 	//constructors
 	public programCore(String wigleDir, String outputDir){
 		_wigleDir = new File(wigleDir);
-		_outputDir = new File(outputDir);
 		_records = new Records();
 		_records.CSV2Records(_wigleDir);
+
+		_outputDir = new File(outputDir);
 		_records.toCSV(_outputDir);
 	}
-	
+
 	//methods
 	/**
 	 * This function converts a string to date in the right format for KML files.
@@ -48,7 +53,41 @@ public class programCore {
 		c.set(year, month-1,day,hour,minutes,sec);
 		return c;
 	}
-	
+
+
+	/**
+	 * This function loads a new Records object from given path, or the existing Records if given path is null.
+	 * After loading Records object, it passes on all macs in Records and estimating their location by the first algorithm. 
+	 * @param loadFrom - a string represents name of the file.
+	 * @return String represents a message for the user with the name and location of the file.
+	 */
+	public ArrayList<String> findAllMACsLocation(String loadFrom) {
+		
+		if (loadFrom != null) {	//if a new Records need to be loaded from file
+			Records loadedRecords = new Records(loadFrom);
+			_records = loadedRecords;
+		}
+		ArrayList<String> allMacs = new ArrayList<>();
+		for (SingleRecord SR : _records.getSingleRecordsList()) {
+			for (Wifi wifi : SR.get_WifiList()) {
+				String MAC = wifi.get_MAC();
+				if (!allMacs.contains(MAC)) {
+					allMacs.add(MAC);
+				}
+			}
+		}
+
+		ArrayList<String> macsEstimatedLocation = new ArrayList<>();
+		for (String MAC : allMacs) {
+			String estimansLocation = locateRouter(MAC);
+			String fullLine = MAC+" - "+estimansLocation;
+			macsEstimatedLocation.add(fullLine);
+		}		
+		return macsEstimatedLocation;
+	}
+
+
+
 	/**
 	 * This function creates a new KML file.
 	 * @param fileName - a string represents name of the file.
@@ -60,7 +99,7 @@ public class programCore {
 		records.toKml(filteredRecord);
 		return "Filtered file ready.\nPath to filtered file: " + _outputDir + "\nFiltered file ready: " + fileName;
 	}
-	
+
 	/**
 	 * This function filters SingleRecord objects by location.
 	 * @param lat - latitude .
@@ -104,7 +143,7 @@ public class programCore {
 		Condition idCondition = currSingleRec->currSingleRec.get_id().toLowerCase().equals(id.toLowerCase());
 		Records filtByID = _records.filter(idCondition);
 		String fileName = "FilteredByID_"+id+".kml";
-		String msgToShow = createFilteredFile(fileName, filtByID);///
+		String msgToShow = createFilteredFile(fileName, filtByID);
 		return msgToShow;
 	}
 
