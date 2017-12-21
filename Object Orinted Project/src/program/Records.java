@@ -34,79 +34,61 @@ public class Records {
 		_records = new ArrayList<SingleRecord>();
 	}
 
-	public Records(String loadFrom){
-		_records = loadRecordsFromFile(loadFrom);
-	}
+
 
 	/**
 	 * This method turn a directory with WiggleWifi csv's to a Records object.
 	 * @param WiggleWifi directory
 	 */
-	public ArrayList<SingleRecord> loadRecordsFromFile(String path) {
+	public void loadRecordsFromFile(String path) {
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new FileReader(path));
-		} catch (FileNotFoundException e) {
-			System.out.println("Error reading loaded file 1.");
-			return null;
-		}
-		String[] pathToSaveOutput = path.split("/");
-		pathToSaveOutput[pathToSaveOutput.length-1] = "loadedRecords";
-		String saveTo = String.join("", pathToSaveOutput);
-		File savedFilePath = new File(saveTo);
-		FileWriter writer;
-		try {
-			writer = new FileWriter(savedFilePath);
-		} catch (IOException e1) {
-			System.out.println("Error writing to file when loading file.");
-			return null;
-		}
-		ArrayList<SingleRecord> records = new ArrayList<>();
-		PrintWriter outs = new PrintWriter(writer);
-		outs.print("Time,id,Lat,Lon,Alt,Num_Of_Networks");
-		String line;
-		try {
+			String line;
+			br.readLine();
 			line = br.readLine();
-		} catch (IOException e) {
-			System.out.println("Error reading loaded file. 2");
-			return null;
-		}
-		while (line != null) {
-			String[] details = line.split(",");
-			ArrayList<Wifi> wifiList = new ArrayList<>();
-			int numOfNetworks = Integer.parseInt(details[5]);
-			for (int wifiIndex = 1; wifiIndex <= numOfNetworks; wifiIndex++) {				
-				int index = 6+(wifiIndex-1)*4;
-				if (!(details[index]==null && details[index+1]==null)) {
-					String ssid;
-					if (details[index]==null) ssid = new String("nullSSID");
-					else ssid = details[index];
-					index++;
-					String mac;
-					if (details[index]==null) mac = new String("nullMAC");
-					else mac = details[index];
-					index++;
-					int freq = Integer.parseInt(details[index++]);
-					int signal = Integer.parseInt(details[index]);
-					Wifi tempWifi = new Wifi(ssid, mac, freq, signal);
-					wifiList.add(tempWifi);
+			while (line != null) {
+				String[] details = line.split(",");
+				ArrayList<Wifi> wifiList = new ArrayList<>();
+				int numOfNetworks = Integer.parseInt(details[5]);
+				for (int wifiIndex = 1; wifiIndex <= numOfNetworks; wifiIndex++) {				
+					int index = 6+(wifiIndex-1)*4;
+					if (!(details[index]==null && details[index+1]==null)) {
+						String ssid;
+						if (details[index]==null) ssid = new String("nullSSID");
+						else ssid = details[index];
+						index++;
+						String mac;
+						if (details[index]==null) mac = new String("nullMAC");
+						else mac = details[index];
+						index++;
+						int freq = Integer.parseInt(details[index++]);
+						int signal = Integer.parseInt(details[index]);
+						Wifi tempWifi = new Wifi(ssid, mac, freq, signal);
+						wifiList.add(tempWifi);
+					}
+				}
+				String dateAndTime = details[0];//convert to date.***
+				String id = details[1];
+				double lat,lon,altitude;
+				if(details[2].equals("?")){  lat =-1;}
+				else { lat =Double.parseDouble(details[2]);} 
+				if(details[3].equals("?")){ lon =-1;}
+				else { lon = Double.parseDouble(details[3]);}
+				if(details[4].equals("?")){ altitude =-1;}
+				else {altitude = Double.parseDouble(details[4]);}
+				SingleRecord tempSR = new SingleRecord(id, wifiList, dateAndTime, lon, lat, altitude);
+				_records.add(tempSR);
+				try {
+					line = br.readLine();
+				} catch (IOException e) {
+					System.out.println("Error reading loaded file. 3");
 				}
 			}
-			String dateAndTime = details[0];//convert to date.***
-			String id = details[1];
-			double lat = Double.parseDouble(details[2]);
-			double lon = Double.parseDouble(details[3]);
-			double altitude = Double.parseDouble(details[4]);
-			SingleRecord tempSR = new SingleRecord(id, wifiList, dateAndTime, lon, lat, altitude);
-			records.add(tempSR);
-			try {
-				line = br.readLine();
-			} catch (IOException e) {
-				System.out.println("Error reading loaded file. 3");
-				return null;
-			}
 		}
-		return records;
+		catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 

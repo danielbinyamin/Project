@@ -6,11 +6,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 
-//import java.awt.geom.Point2D;
-//import java.util.ArrayList;
-//import java.util.Calendar;
-//import java.util.Collections;
-
 /**
  * This class represents a single scan at a specific time and place.
  * @author Daniel
@@ -93,6 +88,22 @@ public class SingleRecord {
 
 	public String get_id() {
 		return _id;
+	}
+	
+	
+
+	public void set_location(Point2D _location) {
+		double lat = _location.getX();
+		double lon = _location.getY();
+		this._location = new Point2D.Double(lat,lon);
+	}
+
+	public void set_altitude(double _altitude) {
+		this._altitude = _altitude;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
 	}
 
 	//toString method

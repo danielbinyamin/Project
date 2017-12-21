@@ -1,4 +1,5 @@
 package program;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,7 +18,7 @@ public class consoleUI {
 	public final static int filterByLocation = 1;
 	public final static int filterByTime = 2;
 	public final static int filterByID = 3;
-	public final static int locateRouter = 4;
+	public final static int locateRouters = 4;
 	public final static int locateUser = 5;
 	public final static int findAllMACsLocation = 6;
 	public final static int findUserLocation = 7;
@@ -110,41 +111,34 @@ public class consoleUI {
 				System.out.println(msgToShow);
 				break;
 
-			case locateRouter:
-				System.out.println("Enter MAC");
-				String mac = _sc.next();
-				msgToShow = _program.locateRouter(mac);
-				System.out.println(msgToShow);	//***maybe it is better to create an KML?
+			case locateRouters:
+				System.out.println("enter file for combined CSV: ");
+				String path = _sc.next();
+				Records main = new Records();
+				main.loadRecordsFromFile(path);
+				System.out.println("Enter path to save Mac location CSV file: ");
+				String outputPath = _sc.next();
+				msgToShow = _program.locateRouters(main,outputPath);
+				System.out.println(msgToShow);	
 				break;
 
 			case locateUser:
-				System.out.println("Enter MAC");
-				String mac1 = _sc.next();
-				System.out.println("Enter its signal");
-				int signal1 = _sc.nextInt();
-				System.out.println("Enter MAC");
-				String mac2 = _sc.next();
-				System.out.println("Enter its signal");
-				int signal2 = _sc.nextInt();
-				System.out.println("Enter MAC");
-				String mac3 = _sc.next();
-				System.out.println("Enter its signal");
-				int signal3 = _sc.nextInt();
-				msgToShow = _program.locateUser(mac1, signal1, mac2, signal2, mac3, signal3);
-				System.out.println(msgToShow);	//***maybe it is better to create an KML?
+				System.out.println("enter path of combined CSV");
+				String combAllFileName = _sc.next();
+				Records CombAllBm2 = new Records();
+				CombAllBm2.loadRecordsFromFile(combAllFileName);
+				System.out.println("enter path of CSV without locations(-1 values in lat,lon,alt):");
+				String noGpsFileName = _sc.next();
+				Records noGps = new Records();
+				noGps.loadRecordsFromFile(noGpsFileName);
+				programCore p =new programCore();
+				Records finl = p.locateUser(CombAllBm2, noGps);
+				System.out.println("your filled csv is ready. enter path to save it to: ");
+				String path2 = _sc.next();
+				File output = new File(path2);
+				finl.toCSV(output);
+				System.out.println("your file is ready at: "+path2+"//output.csv");
 				break;
-
-			case findAllMACsLocation:
-				System.out.println("Enter path to file");
-				String loadFrom = _sc.next();
-				ArrayList<String> allTable = _program.findAllMACsLocation(loadFrom);
-				for (String line : allTable) {
-					System.out.println(line);
-				}
-				break;
-
-			case findUserLocation:
-				//
 
 			default:
 				System.out.println("Not valid input. Please Try Again.");

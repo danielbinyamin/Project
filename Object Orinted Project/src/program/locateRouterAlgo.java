@@ -10,13 +10,13 @@ public class locateRouterAlgo{
 	//members
 	private ArrayList<Double> _weight, _wLat, _wLon, _wAlt;
 	double _wLatSum, _wLonSum, _wAltSum;
-	
+
 	//constructors
 	public locateRouterAlgo(Records records, String mac){
 		fillData(records, mac);
 		calcWeights();
 	}
-	
+
 	/**
 	 * This function initiates all data members.
 	 * @param records - Records object.
@@ -45,7 +45,7 @@ public class locateRouterAlgo{
 			}
 		}
 	}
-	
+
 	/**
 	 * This function calculates all weights needed to estimate location.
 	 */
@@ -63,15 +63,15 @@ public class locateRouterAlgo{
 		_wLonSum = _wLonSum / weightSum;
 		_wAltSum = _wAltSum / weightSum;
 	}
-	
+
 	public Point2D getLocation(){
 		return (new Point2D.Double(_wLatSum,_wLonSum));
 	}
-	
+
 	public double getAlt(){
 		return _wAltSum;
 	}
 
-	
+
 }
 

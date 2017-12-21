@@ -2,7 +2,10 @@ package program;
 
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -32,13 +35,20 @@ public class programCore {
 		_outputDir = new File(outputDir);
 		_records.toCSV(_outputDir);
 	}
+	
+	public programCore() {
+		_wigleDir = new File("");
+		_outputDir = new File("");
+		_records = new Records();
+		
+	}
 
 	//methods
 	/**
 	 * This function converts a string to date in the right format for KML files.
 	 * @param date - a string represents the date to convert.
 	 * @param time - a string represents the time to convert.
-	 * @return Claendar object.
+	 * @return Calendar object.
 	 */
 	public static Calendar StringtoDate(String date, String time) {
 		String[] datearr = date.split("-");
@@ -53,40 +63,6 @@ public class programCore {
 		c.set(year, month-1,day,hour,minutes,sec);
 		return c;
 	}
-
-
-	/**
-	 * This function loads a new Records object from given path, or the existing Records if given path is null.
-	 * After loading Records object, it passes on all macs in Records and estimating their location by the first algorithm. 
-	 * @param loadFrom - a string represents name of the file.
-	 * @return String represents a message for the user with the name and location of the file.
-	 */
-	public ArrayList<String> findAllMACsLocation(String loadFrom) {
-		
-		if (loadFrom != null) {	//if a new Records need to be loaded from file
-			Records loadedRecords = new Records(loadFrom);
-			_records = loadedRecords;
-		}
-		ArrayList<String> allMacs = new ArrayList<>();
-		for (SingleRecord SR : _records.getSingleRecordsList()) {
-			for (Wifi wifi : SR.get_WifiList()) {
-				String MAC = wifi.get_MAC();
-				if (!allMacs.contains(MAC)) {
-					allMacs.add(MAC);
-				}
-			}
-		}
-
-		ArrayList<String> macsEstimatedLocation = new ArrayList<>();
-		for (String MAC : allMacs) {
-			String estimansLocation = locateRouter(MAC);
-			String fullLine = MAC+" - "+estimansLocation;
-			macsEstimatedLocation.add(fullLine);
-		}		
-		return macsEstimatedLocation;
-	}
-
-
 
 	/**
 	 * This function creates a new KML file.
@@ -148,19 +124,43 @@ public class programCore {
 	}
 
 	/**
-	 * This function calls other function to estimate the location of a router.
-	 * @param mac - MAC address to locate.
-	 * @return String represents a message for the user with the estimated location.
+	 * This retrieves all different MAC's from given Records object and creates a csv file of MAC and
+	 their estimated location using the locateRouterAlgo class
+	 * @param main Records type
+	 * @return String represents a message for the user with the path of the created csv.
 	 */
-	public String locateRouter (String mac){
-		locateRouterAlgo WCP = new locateRouterAlgo(_records, mac);
-		Point2D location = WCP.getLocation();
-		double lat = location.getX();
-		double lon = location.getY();
-		double alt = WCP.getAlt();
-		String msgToShow = "("+lat+","+lon+","+alt+")";
+	public String locateRouters (Records main, String output){
+		ArrayList<SingleRecord> dataList = main.getSingleRecordsList();
+		ArrayList<String> macList = new ArrayList<>();
+		for (SingleRecord singleRecord : dataList) {
+			for (Wifi network : singleRecord.get_WifiList()) {
+				String mac = network.get_MAC();
+				if(!macList.contains(mac))
+					macList.add(mac);
+			}
+		}
+		ArrayList<ArrayList<Object>> macAndLocationList = new ArrayList<>();
+		for (String mac : macList) {
+
+			locateRouterAlgo WCP = new locateRouterAlgo(main, mac);
+			Point2D location = WCP.getLocation();
+			double lat = location.getX();
+			double lon = location.getY();
+			double alt = WCP.getAlt();
+			ArrayList<Object> specificMacDetails = new ArrayList<>();
+			specificMacDetails.addAll(Arrays.asList(mac, lat,lon,alt));
+			macAndLocationList.add(specificMacDetails);
+
+		}
+		String msgToShow = createMacLocationsFile(output, macAndLocationList);
+
 		return msgToShow;
 	}
+
+	public Records get_records() {
+		return _records;
+	}
+
 
 	/**
 	 * This function calls other function to estimate the location of a user.
@@ -172,19 +172,74 @@ public class programCore {
 	 * @param Signal3 - signal of the above MAC.
 	 * @return String represents a message for the user with the estimated location.
 	 */
-	public String locateUser (String mac1, int Signal1, String mac2, int Signal2, String mac3, int Signal3) throws Exception{
-		try{
-			findUserAlgo userLocation = new findUserAlgo(_records, mac1, Signal1, mac2, Signal2, mac3, Signal3);
-			Point2D location = userLocation.getLocation();
-			double lat = location.getX();
-			double lon = location.getY();
-			double alt = userLocation.getAlt();
-			String msgToShow = "("+lat+","+lon+","+alt+")";
-			return msgToShow;
+	public Records locateUser (Records main, Records noGpsRecords) throws Exception{
+		ArrayList<SingleRecord> emptyGps = noGpsRecords.getSingleRecordsList();
+		ArrayList<SingleRecord> filledGps = new ArrayList<>();
+		int index = 0;
+		for (SingleRecord currentRecord : emptyGps) {
+			
+			ArrayList<Wifi> wifiList = currentRecord.get_WifiList();
+			String mac1="",mac2="",mac3="";
+			int signal1=0,signal2=0,signal3=0;
+			String[] macArr = {mac1,mac2,mac3};
+			int[] signalArr = {signal1,signal2,signal3};
+			for (int i = 0; i < 3; i++) {
+				try {
+					macArr[i] = wifiList.get(i).get_MAC();
+					signalArr[i]=wifiList.get(i).get_signal();
+				} catch ( IndexOutOfBoundsException e ) {
+					macArr[i] = "-1";
+					signalArr[i] = -1;
+				}
+			}
+
+			try{
+				findUserAlgo userLocation = new findUserAlgo(main, macArr[0], signalArr[0], macArr[1], signalArr[1], macArr[2], signalArr[2]);
+				Point2D location = userLocation.getLocation();
+				double alt = userLocation.getAlt();
+				emptyGps.get(index).set_location(location);
+				emptyGps.get(index).set_altitude(alt);
+				index++;
+			}
+			catch(Exception e){
+				/*no need to throw exception as "userLocation" will throw */
+				Point2D location = new Point2D.Double(-1, -1);
+				emptyGps.get(index).set_location(location);
+				emptyGps.get(index).set_altitude(-1);
+				index++;
+			}
+		}//end for
+		Records fullGps = new Records(emptyGps);
+		return fullGps;
+
+	}
+
+	/**
+	 * This function creates a CSV of MAC locations 
+	 * @param fileName
+	 * @param macAndLocationList
+	 * @return string message of file path.
+	 */
+	public String createMacLocationsFile(String fileName, ArrayList<ArrayList<Object>> macAndLocationList) {
+		try {
+			//add headers to CSV file
+			FileWriter writer = new FileWriter(fileName);//***\\output.csv was changed to /output.csv
+			PrintWriter outs = new PrintWriter(writer);
+			outs.println("MAC,Lat,Lon,Alt");
+
+			for (ArrayList<Object> specifidMacDetails : macAndLocationList) {
+				String mac = (String)specifidMacDetails.get(0);
+				String lat = Double.toString((double)specifidMacDetails.get(1));
+				String lon= Double.toString((double)specifidMacDetails.get(2));
+				String alt = Double.toString((double)specifidMacDetails.get(3));
+				outs.println(mac+","+lat+","+lon+","+alt);
+			}	
+			outs.close();
+			writer.close();
 		}
-		catch(Exception e){
-			/*no need to throw exception as "userLocation" will throw */
-			return null;
+		catch (Exception e) {
+			System.out.println("Error writing from MacLocationList to CSV. Exception:\n: "+e);
 		}
+		return "MAC locations CSV is ready at: "+fileName;
 	}
 }
