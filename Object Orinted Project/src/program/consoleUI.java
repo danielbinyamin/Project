@@ -112,22 +112,22 @@ public class consoleUI {
 				break;
 
 			case locateRouters:
-				System.out.println("enter file for combined CSV: ");
+				System.out.println("enter path/filename.csv for combined CSV: ");
 				String path = _sc.next();
 				Records main = new Records();
 				main.loadRecordsFromFile(path);
-				System.out.println("Enter path to save Mac location CSV file: ");
+				System.out.println("Enter path/filename.csv to save Mac location CSV file: ");
 				String outputPath = _sc.next();
 				msgToShow = _program.locateRouters(main,outputPath);
 				System.out.println(msgToShow);	
 				break;
 
 			case locateUser:
-				System.out.println("enter path of combined CSV");
+				System.out.println("enter path/filename.csv for combined CSV: ");
 				String combAllFileName = _sc.next();
 				Records CombAllBm2 = new Records();
 				CombAllBm2.loadRecordsFromFile(combAllFileName);
-				System.out.println("enter path of CSV without locations(-1 values in lat,lon,alt):");
+				System.out.println("enter path/filename.csv for csv without locations(-1 values in lat,lon,alt):");
 				String noGpsFileName = _sc.next();
 				Records noGps = new Records();
 				noGps.loadRecordsFromFile(noGpsFileName);
