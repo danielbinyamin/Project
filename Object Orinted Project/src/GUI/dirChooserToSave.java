@@ -5,9 +5,9 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
-public class dirChooser2 {
+public class dirChooserToSave {
 
-	public static File run() {
+	public static String run() {
 
 		JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 		jfc.setDialogTitle("Choose a directory to save output file: ");
@@ -16,7 +16,7 @@ public class dirChooser2 {
 		int returnValue = jfc.showDialog(null,"Choose");
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			if (jfc.getSelectedFile().isDirectory()) {
-				return jfc.getSelectedFile();
+				return jfc.getSelectedFile().getPath();
 			}
 		}
 		return null;

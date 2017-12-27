@@ -3,13 +3,17 @@ package GUI;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import program.Records;
+import program.programCoreV2;
 
 import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.awt.event.ActionEvent;
 import java.awt.Button;
 import java.awt.List;
@@ -19,14 +23,47 @@ import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;
+import javax.swing.JEditorPane;
+import javax.swing.DropMode;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+
+import java.awt.Component;
+import javax.swing.Box;
+import java.awt.Rectangle;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
 
 public class mainWindowUI {
 
 	private JFrame frame;
-	private Records mainDataBase;
-	private File outputDir;
+	private programCoreV2 _programCore;
+	private String outputDir;
 	private JTextField txtDirLoaded;
 	private JTextField txtOutputCsvCreated;
+	private JTextField txtSaveDataAs;
+	private JTextField dataInformationTxt;
+	private JTextField txtFindRouter;
+	private JTextField txtEnterMac;
+	private JTextField txtLon;
+	private JTextField latAnswerAlgo1;
+	private JTextField txtLat;
+	private JTextField lonAnswerAlgo1;
+	private JTextField txtAlt;
+	private JTextField altAnswerAlgo1;
+	private JTextField txtFindUser;
+	private JTextField txtEnterMac_1;
+	private JTextField txtEnterMac_2;
+	private JTextField txtEnterMac_3;
+	private JTextField txtEnterSignal;
+	private JTextField txtEnterSignal_1;
+	private JTextField txtEnterSignal_2;
+	private JTextField textField_1;
+	private JTextField textField_4;
+	private JTextField textField_5;
+	private JTextField latAnswerAlgo2;
+	private JTextField lonAnswerAlgo2;
+	private JTextField altAnswerAlgo2;
 
 	/**
 	 * Launch the application.
@@ -58,85 +95,456 @@ public class mainWindowUI {
 	private void initialize() {
 		frame = new JFrame();
 		frame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 13));
-		frame.setBounds(100, 100, 720, 472);
+		frame.setBounds(100, 100, 1030, 685);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainDataBase = new Records();
-		outputDir = new File("");
-		
 
-		//create csv output button
-		JButton createOutputCsvButton = new JButton("Create output csv");
-		if (mainDataBase.isEmpty())
-			createOutputCsvButton.setVisible(false);
-		createOutputCsvButton.addActionListener(new ActionListener() {
+		JPanel general=new JPanel();
+		JPanel filterOptions=new JPanel();  
+		JPanel algorithms=new JPanel(); 
+		JTabbedPane tabs=new JTabbedPane();
+		tabs.setBounds(new Rectangle(0, 0, 1012, 638));
+
+
+
+		//----------------------------------------------------------GENERAL TAB----------------------------------------------------//
+
+		tabs.add("General",general); 
+		tabs.setFont(new Font("Tahoma", Font.PLAIN, 20));
+
+		JButton revertBtn = new JButton("Revert back(Cancel filters)");
+		revertBtn.setBounds(85, 16, 252, 31);
+		revertBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dirChooser2 dir = new dirChooser2();
-				outputDir = dir.run();
-				mainDataBase.toCSV(outputDir);
-				txtOutputCsvCreated.setText("output csv created at: "+ outputDir.getPath());
-				txtOutputCsvCreated.setVisible(true);
-				System.out.println("Succesfully created output file at: " + outputDir.getPath());
-			}		
-		});
-		createOutputCsvButton.setBounds(426, 121, 195, 38);
-		frame.getContentPane().add(createOutputCsvButton);
-
-		//dir loaded text
-		txtDirLoaded = new JTextField();
-		txtDirLoaded.setFont(new Font("Tahoma", Font.BOLD, 15));
-		txtDirLoaded.setEditable(false);
-		txtDirLoaded.setText("dir loaded!");
-		txtDirLoaded.setBounds(479, 90, 89, 22);
-		frame.getContentPane().add(txtDirLoaded);
-		txtDirLoaded.setColumns(10);
-		txtDirLoaded.setVisible(false);
-
-
-		//clear button
-		JButton clearButton = new JButton("Clear");
-		clearButton.setVisible(false);
-		clearButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				mainDataBase = new Records();
-				clearButton.setVisible(false);
-				createOutputCsvButton.setVisible(false);
-				txtDirLoaded.setVisible(false);
-				txtOutputCsvCreated.setVisible(false);
 			}
 		});
-		clearButton.setBounds(426, 204, 195, 38);
-		frame.getContentPane().add(clearButton);
+		general.setLayout(null);
+		general.add(revertBtn);
+		revertBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 
 
 		//load wiggle dir button
 		JButton btnLoadWigglewifiDirectory = new JButton("Load WiggleWifi Directory");
+		btnLoadWigglewifiDirectory.setBounds(743, 14, 252, 34);
+		general.add(btnLoadWigglewifiDirectory);
+		btnLoadWigglewifiDirectory.setFont(new Font("Tahoma", Font.PLAIN, 18));
+
+		//dir loaded text
+		txtDirLoaded = new JTextField();
+		txtDirLoaded.setBounds(839, 46, 89, 22);
+		general.add(txtDirLoaded);
+		txtDirLoaded.setFont(new Font("Tahoma", Font.BOLD, 15));
+		txtDirLoaded.setEditable(false);
+		txtDirLoaded.setText("dir loaded!");
+		txtDirLoaded.setColumns(10);
+
+		JButton AddCombCsvBtn = new JButton("Add combined .csv");
+		AddCombCsvBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fileChooser fl = new fileChooser();
+				File combinedCsv = fl.run();
+			}
+		});
+		AddCombCsvBtn.setBounds(776, 120, 195, 38);
+		general.add(AddCombCsvBtn);
+		AddCombCsvBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+
+
+		//clear button
+		JButton clearButton = new JButton("Clear");
+		clearButton.setBounds(776, 255, 195, 38);
+		general.add(clearButton);
+		clearButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
+
+		txtSaveDataAs = new JTextField();
+		txtSaveDataAs.setBounds(743, 502, 146, 26);
+		general.add(txtSaveDataAs);
+		txtSaveDataAs.setEditable(false);
+		txtSaveDataAs.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtSaveDataAs.setForeground(Color.BLACK);
+		txtSaveDataAs.setText("   Save data as:");
+		txtSaveDataAs.setColumns(10);
+
+		JButton createOutputKmlBtn = new JButton(".kml");
+
+		createOutputKmlBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dirChooserToSave dir = new dirChooserToSave();
+				outputDir = dir.run();
+				_programCore.createKMLfromRecords(outputDir);
+				txtOutputCsvCreated.setText("output kml created at: "+ outputDir);
+				txtOutputCsvCreated.setVisible(true);
+				System.out.println("Succesfully created output file at: " + outputDir);		
+			}
+		});
+		createOutputKmlBtn.setBounds(634, 541, 160, 34);
+		general.add(createOutputKmlBtn);
+
+
+		//create csv output button
+		JButton createOutputCsvButton = new JButton(".csv");
+		createOutputCsvButton.setBounds(835, 541, 160, 34);
+		general.add(createOutputCsvButton);
+
+		//created csv path text
+		txtOutputCsvCreated = new JTextField();
+		txtOutputCsvCreated.setBounds(598, 573, 397, 22);
+		general.add(txtOutputCsvCreated);
+		txtOutputCsvCreated.setFont(new Font("Tahoma", Font.BOLD, 15));
+		txtOutputCsvCreated.setEditable(false);
+		txtOutputCsvCreated.setForeground(SystemColor.desktop);
+		txtOutputCsvCreated.setColumns(10);
+
+		dataInformationTxt = new JTextField();
+		dataInformationTxt.setEditable(false);
+		dataInformationTxt.setText("----------Data information here-------");
+		dataInformationTxt.setBounds(12, 461, 299, 122);
+		general.add(dataInformationTxt);
+		dataInformationTxt.setColumns(10);
+		txtOutputCsvCreated.setVisible(false);
+		createOutputCsvButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dirChooserToSave dir = new dirChooserToSave();
+				outputDir = dir.run();
+				_programCore.createCSVfromRecords(outputDir);
+				txtOutputCsvCreated.setText("output csv created at: "+ outputDir);
+				txtOutputCsvCreated.setVisible(true);
+			}		
+		});
+		clearButton.setEnabled(false);
+		clearButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				_programCore.cleanRecordsData();
+				clearButton.setEnabled(false);
+				createOutputCsvButton.setEnabled(false);
+				createOutputKmlBtn.setEnabled(false);
+				txtDirLoaded.setVisible(false);
+				txtOutputCsvCreated.setVisible(false);
+			}
+		});
+		txtDirLoaded.setVisible(false);
 		btnLoadWigglewifiDirectory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				dirChooser1 dir = new dirChooser1();
-				File wiggleDir = dir.run();
-				mainDataBase.CSV2Records(wiggleDir);
+				dirChooserToLoad dir = new dirChooserToLoad();
+				String wiggleDir = dir.run();
+				_programCore = new programCoreV2();
+				_programCore.loadRecordsFromWiggleDir(wiggleDir);
 				txtDirLoaded.setVisible(true);
 				txtOutputCsvCreated.setVisible(false);
-				if(!mainDataBase.isEmpty()) {
-					createOutputCsvButton.setVisible(true);
-					clearButton.setVisible(true);
+				if(!_programCore.get_records().isEmpty()) {
+					createOutputCsvButton.setEnabled(true);
+					createOutputKmlBtn.setEnabled(true);
+					clearButton.setEnabled(true);
 				}
 			}
 		});
 		frame.getContentPane().setLayout(null);
-		btnLoadWigglewifiDirectory.setBounds(426, 53, 195, 38);
-		frame.getContentPane().add(btnLoadWigglewifiDirectory);
-		
-		//created csv path text
-		txtOutputCsvCreated = new JTextField();
-		txtOutputCsvCreated.setFont(new Font("Tahoma", Font.BOLD, 15));
-		txtOutputCsvCreated.setEditable(false);
-		txtOutputCsvCreated.setForeground(SystemColor.desktop);
-		txtOutputCsvCreated.setBounds(281, 157, 397, 22);
-		frame.getContentPane().add(txtOutputCsvCreated);
-		txtOutputCsvCreated.setColumns(10);
-		txtOutputCsvCreated.setVisible(false);
+
+		//----------------------------------------------------------FILTER OPTIONS TAB----------------------------------------------------//
+
+		tabs.add("filterOptions",filterOptions);
+		filterOptions.setLayout(null);
+
+		JButton saveFilterBtn = new JButton("Save current filter");
+		saveFilterBtn.setBounds(801, 30, 156, 33);
+		filterOptions.add(saveFilterBtn);
+
+		JButton loadExternalFilterBtn = new JButton("Load external filter");
+		loadExternalFilterBtn.setBounds(801, 130, 156, 33);
+		filterOptions.add(loadExternalFilterBtn);
+
+		JButton addFilterBtn = new JButton("Add filter +");
+		addFilterBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				filterPicker filterChoose = new filterPicker();
+				filterChoose.run();
+			}
+		});
+		addFilterBtn.setBounds(801, 230, 156, 33);
+		filterOptions.add(addFilterBtn);
+
+		JTextPane txtpncurrentFilterInformation = new JTextPane();
+		txtpncurrentFilterInformation.setText("-------current filter information here----------");
+		txtpncurrentFilterInformation.setBounds(45, 426, 210, 116);
+		filterOptions.add(txtpncurrentFilterInformation);
+
+		//----------------------------------------------------------Algorithms-----------------------------------------------------------//
+
+		tabs.add("Algorithms",algorithms);
+		algorithms.setLayout(null);
+
+		txtFindRouter = new JTextField();
+		txtFindRouter.setEditable(false);
+		txtFindRouter.setFont(new Font("Tahoma", Font.PLAIN, 19));
+		txtFindRouter.setText("              Find Router");
+		txtFindRouter.setBounds(328, 0, 255, 22);
+		algorithms.add(txtFindRouter);
+		txtFindRouter.setColumns(10);
+
+		txtEnterMac = new JTextField();
+		txtEnterMac.setEditable(false);
+		txtEnterMac.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtEnterMac.setText("Enter MAC: ");
+		txtEnterMac.setBounds(12, 59, 101, 42);
+		algorithms.add(txtEnterMac);
+		txtEnterMac.setColumns(10);
+
+		JTextArea textAreaMacAlgo1 = new JTextArea();
+		textAreaMacAlgo1.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		textAreaMacAlgo1.setBounds(113, 67, 203, 31);
+		algorithms.add(textAreaMacAlgo1);
+
+		JButton btnNewButton_1 = new JButton("Calculate");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				String mac = textAreaMacAlgo1.getText();
+				Map<String, Double> answer = _programCore.locateRouter(mac);
+				Double lat = answer.get("lat");
+				Double lon = answer.get("lon");
+				Double alt = answer.get("alt");
+
+				latAnswerAlgo1.setText(Double.toString(lat));
+				lonAnswerAlgo1.setText(Double.toString(lon));
+				altAnswerAlgo1.setText(Double.toString(alt));
+			}
+		});
+		btnNewButton_1.setBounds(328, 69, 148, 32);
+		algorithms.add(btnNewButton_1);
+
+		txtLon = new JTextField();
+		txtLon.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtLon.setEditable(false);
+		txtLon.setText("Lon:");
+		txtLon.setBounds(12, 158, 42, 22);
+		algorithms.add(txtLon);
+		txtLon.setColumns(10);
+
+		latAnswerAlgo1 = new JTextField();
+		latAnswerAlgo1.setEditable(false);
+		latAnswerAlgo1.setBounds(58, 131, 184, 22);
+		algorithms.add(latAnswerAlgo1);
+		latAnswerAlgo1.setColumns(10);
+
+		txtLat = new JTextField();
+		txtLat.setText("Lat:");
+		txtLat.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtLat.setEditable(false);
+		txtLat.setColumns(10);
+		txtLat.setBounds(12, 130, 42, 22);
+		algorithms.add(txtLat);
+
+		lonAnswerAlgo1 = new JTextField();
+		lonAnswerAlgo1.setEditable(false);
+		lonAnswerAlgo1.setColumns(10);
+		lonAnswerAlgo1.setBounds(58, 159, 184, 22);
+		algorithms.add(lonAnswerAlgo1);
+
+		txtAlt = new JTextField();
+		txtAlt.setText("Alt:");
+		txtAlt.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtAlt.setEditable(false);
+		txtAlt.setColumns(10);
+		txtAlt.setBounds(12, 186, 42, 22);
+		algorithms.add(txtAlt);
+
+		altAnswerAlgo1 = new JTextField();
+		altAnswerAlgo1.setEditable(false);
+		altAnswerAlgo1.setColumns(10);
+		altAnswerAlgo1.setBounds(58, 187, 184, 22);
+		algorithms.add(altAnswerAlgo1);
+
+		JButton btnNewButton_2 = new JButton("Clear");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				latAnswerAlgo1.setText("");
+				lonAnswerAlgo1.setText("");
+				altAnswerAlgo1.setText("");
+			}
+		});
+		btnNewButton_2.setBounds(328, 158, 148, 32);
+		algorithms.add(btnNewButton_2);
+
+		JSeparator separator = new JSeparator();
+		separator.setBounds(0, 221, 891, 16);
+		algorithms.add(separator);
+
+		txtFindUser = new JTextField();
+		txtFindUser.setText("              Find User");
+		txtFindUser.setFont(new Font("Tahoma", Font.PLAIN, 19));
+		txtFindUser.setEditable(false);
+		txtFindUser.setColumns(10);
+		txtFindUser.setBounds(328, 231, 255, 22);
+		algorithms.add(txtFindUser);
+
+		txtEnterMac_1 = new JTextField();
+		txtEnterMac_1.setText("Enter MAC1: ");
+		txtEnterMac_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtEnterMac_1.setEditable(false);
+		txtEnterMac_1.setColumns(10);
+		txtEnterMac_1.setBounds(12, 271, 101, 42);
+		algorithms.add(txtEnterMac_1);
+
+		JTextArea mac1InputAlgo2 = new JTextArea();
+		mac1InputAlgo2.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		mac1InputAlgo2.setBounds(113, 282, 148, 31);
+		algorithms.add(mac1InputAlgo2);
+
+		txtEnterMac_2 = new JTextField();
+		txtEnterMac_2.setText("Enter MAC2: ");
+		txtEnterMac_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtEnterMac_2.setEditable(false);
+		txtEnterMac_2.setColumns(10);
+		txtEnterMac_2.setBounds(12, 326, 101, 42);
+		algorithms.add(txtEnterMac_2);
+
+		JTextArea mac2InputAlgo2 = new JTextArea();
+		mac2InputAlgo2.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		mac2InputAlgo2.setBounds(113, 337, 148, 31);
+		algorithms.add(mac2InputAlgo2);
+
+		txtEnterMac_3 = new JTextField();
+		txtEnterMac_3.setText("Enter MAC3: ");
+		txtEnterMac_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtEnterMac_3.setEditable(false);
+		txtEnterMac_3.setColumns(10);
+		txtEnterMac_3.setBounds(12, 380, 101, 42);
+		algorithms.add(txtEnterMac_3);
+
+		JTextArea mac3InputAlgo2 = new JTextArea();
+		mac3InputAlgo2.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		mac3InputAlgo2.setBounds(113, 391, 148, 31);
+		algorithms.add(mac3InputAlgo2);
+
+		txtEnterSignal = new JTextField();
+		txtEnterSignal.setText("Enter SIGNAL1: ");
+		txtEnterSignal.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtEnterSignal.setEditable(false);
+		txtEnterSignal.setColumns(10);
+		txtEnterSignal.setBounds(375, 271, 126, 42);
+		algorithms.add(txtEnterSignal);
+
+		JTextArea signal1InputAlgo2 = new JTextArea();
+		signal1InputAlgo2.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		signal1InputAlgo2.setBounds(501, 279, 148, 31);
+		algorithms.add(signal1InputAlgo2);
+
+		JTextArea signal2InputAlgo2 = new JTextArea();
+		signal2InputAlgo2.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		signal2InputAlgo2.setBounds(501, 334, 148, 31);
+		algorithms.add(signal2InputAlgo2);
+
+		JTextArea signal3InputAlgo2 = new JTextArea();
+		signal3InputAlgo2.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		signal3InputAlgo2.setBounds(501, 388, 148, 31);
+		algorithms.add(signal3InputAlgo2);
+
+		txtEnterSignal_1 = new JTextField();
+		txtEnterSignal_1.setText("Enter SIGNAL2: ");
+		txtEnterSignal_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtEnterSignal_1.setEditable(false);
+		txtEnterSignal_1.setColumns(10);
+		txtEnterSignal_1.setBounds(375, 326, 126, 42);
+		algorithms.add(txtEnterSignal_1);
+
+		txtEnterSignal_2 = new JTextField();
+		txtEnterSignal_2.setText("Enter SIGNAL3: ");
+		txtEnterSignal_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtEnterSignal_2.setEditable(false);
+		txtEnterSignal_2.setColumns(10);
+		txtEnterSignal_2.setBounds(375, 380, 126, 42);
+		algorithms.add(txtEnterSignal_2);
+
+		JButton button = new JButton("Calculate");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				String mac1 = mac1InputAlgo2.getText();
+				String mac2 = mac2InputAlgo2.getText();
+				String mac3 = mac3InputAlgo2.getText();
+				int signal1 = Integer.parseInt(signal1InputAlgo2.getText());
+				int signal2 = Integer.parseInt(signal2InputAlgo2.getText());
+				int signal3 = Integer.parseInt(signal3InputAlgo2.getText());
+				Map<String, Double> answer;
+				try { answer = _programCore.locateUser(mac1, signal1, mac2, signal2, mac3, signal3); }		
+				catch (Exception e1) { 
+					answer = new HashMap<>();
+					e1.printStackTrace(); 
+				}
+				Double lat = answer.get("lat");
+				Double lon = answer.get("lon");
+				Double alt = answer.get("alt");
+
+				latAnswerAlgo2.setText(Double.toString(lat));
+				lonAnswerAlgo2.setText(Double.toString(lon));
+				altAnswerAlgo2.setText(Double.toString(alt));
+
+			}
+		});
+		button.setBounds(725, 336, 148, 32);
+		algorithms.add(button);
+
+		textField_1 = new JTextField();
+		textField_1.setText("Lon:");
+		textField_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textField_1.setEditable(false);
+		textField_1.setColumns(10);
+		textField_1.setBounds(12, 510, 42, 22);
+		algorithms.add(textField_1);
+
+		textField_4 = new JTextField();
+		textField_4.setText("Lat:");
+		textField_4.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textField_4.setEditable(false);
+		textField_4.setColumns(10);
+		textField_4.setBounds(12, 480, 42, 22);
+		algorithms.add(textField_4);
+
+		textField_5 = new JTextField();
+		textField_5.setText("Alt:");
+		textField_5.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textField_5.setEditable(false);
+		textField_5.setColumns(10);
+		textField_5.setBounds(12, 539, 42, 22);
+		algorithms.add(textField_5);
+
+		latAnswerAlgo2 = new JTextField();
+		latAnswerAlgo2.setEditable(false);
+		latAnswerAlgo2.setColumns(10);
+		latAnswerAlgo2.setBounds(58, 481, 160, 22);
+		algorithms.add(latAnswerAlgo2);
+
+		lonAnswerAlgo2 = new JTextField();
+		lonAnswerAlgo2.setEditable(false);
+		lonAnswerAlgo2.setColumns(10);
+		lonAnswerAlgo2.setBounds(58, 511, 160, 22);
+		algorithms.add(lonAnswerAlgo2);
+
+		altAnswerAlgo2 = new JTextField();
+		altAnswerAlgo2.setEditable(false);
+		altAnswerAlgo2.setColumns(10);
+		altAnswerAlgo2.setBounds(58, 540, 160, 22);
+		algorithms.add(altAnswerAlgo2);
+
+		JButton button_1 = new JButton("Clear");
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				latAnswerAlgo2.setText("");
+				lonAnswerAlgo2.setText("");
+				altAnswerAlgo2.setText("");
+			}
+		});
+		button_1.setBounds(271, 506, 148, 32);
+		algorithms.add(button_1);
+
+		frame.getContentPane().add(tabs);
+
+		_programCore = new programCoreV2();
+		if (_programCore.isRecordsEmpty()) {
+			createOutputCsvButton.setEnabled(false);
+			createOutputKmlBtn.setEnabled(false);
+			clearButton.setEnabled(false);
+		}
 
 
 

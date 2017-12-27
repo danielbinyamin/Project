@@ -33,6 +33,10 @@ public class Records {
 	public Records(){
 		_records = new ArrayList<SingleRecord>();
 	}
+	
+	public Records(Records records) {
+		_records = new ArrayList<>(records.getSingleRecordsList());
+	}
 
 
 
