@@ -161,7 +161,6 @@ public class programCore {
 		return _records;
 	}
 
-
 	/**
 	 * This function calls other function to estimate the location of a user.
 	 * @param mac1 - MAC address located by user.
@@ -242,4 +241,21 @@ public class programCore {
 		}
 		return "MAC locations CSV is ready at: "+fileName;
 	}
+
+	/**This function return number of scans in program
+	 * 
+	 * @return number of scans
+	 */
+	public int scanCount() {
+		return _records.size();
+	}
+	
+	/**This function return number of diffrent MAC's in the data structure
+	 * 
+	 * @return number of routers
+	 */
+	public int diffRouterCount() {
+		return _records.numOfDiffRouter();
+	}
+
 }

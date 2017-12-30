@@ -13,7 +13,7 @@ public class fileChooser {
 	/**
 	 * @wbp.parser.entryPoint
 	 */
-	public static File run() {
+	public static String run() {
 
 		JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 		jfc.setDialogTitle("Choose combined CSV: ");
@@ -24,7 +24,7 @@ public class fileChooser {
 		jfc.addChoosableFileFilter(filter);
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			if (jfc.getSelectedFile().isFile()) {
-				return jfc.getSelectedFile();
+				return jfc.getSelectedFile().getPath();
 			}
 		}
 		return null;

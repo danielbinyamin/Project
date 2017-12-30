@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 import de.micromata.opengis.kml.v_2_2_0.Document;
@@ -22,7 +24,8 @@ import de.micromata.opengis.kml.v_2_2_0.Placemark;
  * @author Daniel & Tal
  *
  */
-public class Records {
+public class Records  {
+
 	private ArrayList<SingleRecord> _records;
 
 	//Constructors
@@ -33,7 +36,7 @@ public class Records {
 	public Records(){
 		_records = new ArrayList<SingleRecord>();
 	}
-	
+
 	public Records(Records records) {
 		_records = new ArrayList<>(records.getSingleRecordsList());
 	}
@@ -41,7 +44,7 @@ public class Records {
 
 
 	/**
-	 * This method turn a directory with WiggleWifi csv's to a Records object.
+	 * This method loads a combined CSV into the records data structure
 	 * @param WiggleWifi directory
 	 */
 	public void loadRecordsFromFile(String path) {
@@ -91,13 +94,59 @@ public class Records {
 			}
 		}
 		catch (Exception e) {
-			System.out.println(e);
+			System.out.println("Error loading data from combined csv. "+e);
 		}
 	}
 
+	public void loadRecordsFromFilev2(String path) {
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new FileReader(path));
+			String line;
+			br.readLine();
+			line = br.readLine();
+			while (line != null) {
+				String[] details = line.split(",");
+				//parsing string into calendar
+				String dateString = details[0]; 
+				Calendar date = Calendar.getInstance();
+				SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+				date.setTime(sdf.parse(dateString));
+				
+				String id = details[1];
+				double lat = Double.parseDouble(details[2]);
+				double lon = Double.parseDouble(details[3]);
+				double alt = Double.parseDouble(details[4]);
 
+				ArrayList<Wifi> wifiList = new ArrayList<>();
+				String ssid,mac;
+				int freq,signal;
+				for (int i = 6; i < details.length; i=i+4) {
+					ssid = details[i];
+					mac = details[i+1];
+					freq = Integer.parseInt(details[i+2]);
+					signal = Integer.parseInt(details[i+3]);
+					Wifi currentWifi = new Wifi(ssid,mac,freq,signal);
+					wifiList.add(currentWifi);
+				}
+				SingleRecord currentRecord = new SingleRecord(id, wifiList, date, lon, lat, alt);
+				_records.add(currentRecord);
+				try { line = br.readLine(); }
+				catch (IOException e) { System.out.println("Error reading line while loading combined csv\n"+e);			
+				}
+			}
+		}
+		catch (Exception e) {
+			System.out.println("Error loading combined CSV\n"+e);
+		}
+	}
 
-
+	public void addRecords(Records records) {
+		for (SingleRecord singleRecord : records.getSingleRecordsList()) {
+			_records.add(singleRecord);
+		}
+		Collections.sort(_records);
+	}
 
 	/**
 	 * This method turn a directory with WiggleWifi csv's to a Records object.
@@ -276,6 +325,27 @@ public class Records {
 
 	public boolean isEmpty() {
 		return _records.size()==0;
+	}
+	
+	public ArrayList<String> getListOfDiffRouters() {
+		ArrayList<String> macList = new ArrayList<>();
+		String mac;
+		for (SingleRecord currentRecord : _records) {
+			for (Wifi currentWifi : currentRecord.get_WifiList()) {
+				mac = currentWifi.get_MAC();
+				if(!macList.contains(mac))
+					macList.add(mac);
+			}
+		}
+		return macList;
+	}
+	
+	public int numOfDiffRouter() {
+		return this.getListOfDiffRouters().size();
+	}
+	
+	public int size() {
+		return _records.size();
 	}
 
 }

@@ -18,6 +18,9 @@ import java.awt.event.ActionEvent;
 import java.awt.Button;
 import java.awt.List;
 import javax.swing.event.ChangeListener;
+
+import org.omg.stub.java.rmi._Remote_Stub;
+
 import javax.swing.event.ChangeEvent;
 import javax.swing.JTextField;
 import java.awt.Color;
@@ -33,6 +36,7 @@ import javax.swing.Box;
 import java.awt.Rectangle;
 import javax.swing.JTextPane;
 import javax.swing.JTextArea;
+import javax.swing.JPasswordField;
 
 public class mainWindowUI {
 
@@ -42,7 +46,6 @@ public class mainWindowUI {
 	private JTextField txtDirLoaded;
 	private JTextField txtOutputCsvCreated;
 	private JTextField txtSaveDataAs;
-	private JTextField dataInformationTxt;
 	private JTextField txtFindRouter;
 	private JTextField txtEnterMac;
 	private JTextField txtLon;
@@ -64,6 +67,13 @@ public class mainWindowUI {
 	private JTextField latAnswerAlgo2;
 	private JTextField lonAnswerAlgo2;
 	private JTextField altAnswerAlgo2;
+	private JTextField txtFileAddedSuccesfully;
+	private JTextField txtNumberOfScans;
+	private JTextField numOfScans;
+	private JTextField txtNumberOfDiffrent;
+	private JTextField numOfRouters;
+	private JTextField txtFilterInformation;
+	private JTextArea txtrFilterInformationHere;
 
 	/**
 	 * Launch the application.
@@ -87,6 +97,14 @@ public class mainWindowUI {
 	 */
 	public mainWindowUI() {
 		initialize();
+		numOfRouters.setText("N/A");
+	}
+	
+	private void updateInfo() {
+		int numOfScansInt = _programCore.scanCount();
+		int numOfRoutersInt = _programCore.diffRouterCount();
+		numOfScans.setText(Integer.toString(numOfScansInt));
+		numOfRouters.setText(Integer.toString(numOfRoutersInt));
 	}
 
 	/**
@@ -121,7 +139,18 @@ public class mainWindowUI {
 		general.add(revertBtn);
 		revertBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
+		//create csv output button
+		JButton createOutputCsvButton = new JButton(".csv");
+		createOutputCsvButton.setBounds(835, 541, 160, 34);
+		general.add(createOutputCsvButton);
 
+		JButton createOutputKmlBtn = new JButton(".kml");
+
+		//clear button
+		JButton clearButton = new JButton("Clear");
+		clearButton.setBounds(776, 255, 195, 38);
+		general.add(clearButton);
+		clearButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		//load wiggle dir button
 		JButton btnLoadWigglewifiDirectory = new JButton("Load WiggleWifi Directory");
@@ -139,10 +168,23 @@ public class mainWindowUI {
 		txtDirLoaded.setColumns(10);
 
 		JButton AddCombCsvBtn = new JButton("Add combined .csv");
+		AddCombCsvBtn.setEnabled(false);
 		AddCombCsvBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				fileChooser fl = new fileChooser();
-				File combinedCsv = fl.run();
+				String combinedCsv = fl.run();
+				try {
+					_programCore.addCombinedCSV(combinedCsv);
+				}
+				catch(NullPointerException ex) {
+					_programCore = new programCoreV2();
+					_programCore.addCombinedCSV(combinedCsv);
+				}
+				txtFileAddedSuccesfully.setVisible(true);
+				createOutputCsvButton.setEnabled(true);
+				createOutputKmlBtn.setEnabled(true);
+				clearButton.setEnabled(true);
+				updateInfo();
 			}
 		});
 		AddCombCsvBtn.setBounds(776, 120, 195, 38);
@@ -150,11 +192,7 @@ public class mainWindowUI {
 		AddCombCsvBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 
-		//clear button
-		JButton clearButton = new JButton("Clear");
-		clearButton.setBounds(776, 255, 195, 38);
-		general.add(clearButton);
-		clearButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
+
 
 		txtSaveDataAs = new JTextField();
 		txtSaveDataAs.setBounds(743, 502, 146, 26);
@@ -165,7 +203,7 @@ public class mainWindowUI {
 		txtSaveDataAs.setText("   Save data as:");
 		txtSaveDataAs.setColumns(10);
 
-		JButton createOutputKmlBtn = new JButton(".kml");
+
 
 		createOutputKmlBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -181,10 +219,7 @@ public class mainWindowUI {
 		general.add(createOutputKmlBtn);
 
 
-		//create csv output button
-		JButton createOutputCsvButton = new JButton(".csv");
-		createOutputCsvButton.setBounds(835, 541, 160, 34);
-		general.add(createOutputCsvButton);
+
 
 		//created csv path text
 		txtOutputCsvCreated = new JTextField();
@@ -194,13 +229,6 @@ public class mainWindowUI {
 		txtOutputCsvCreated.setEditable(false);
 		txtOutputCsvCreated.setForeground(SystemColor.desktop);
 		txtOutputCsvCreated.setColumns(10);
-
-		dataInformationTxt = new JTextField();
-		dataInformationTxt.setEditable(false);
-		dataInformationTxt.setText("----------Data information here-------");
-		dataInformationTxt.setBounds(12, 461, 299, 122);
-		general.add(dataInformationTxt);
-		dataInformationTxt.setColumns(10);
 		txtOutputCsvCreated.setVisible(false);
 		createOutputCsvButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -212,14 +240,74 @@ public class mainWindowUI {
 			}		
 		});
 		clearButton.setEnabled(false);
+
+		txtFileAddedSuccesfully = new JTextField();
+		txtFileAddedSuccesfully.setFont(new Font("Tahoma", Font.BOLD, 13));
+		txtFileAddedSuccesfully.setEditable(false);
+		txtFileAddedSuccesfully.setText("File added succesfully!");
+		txtFileAddedSuccesfully.setBounds(786, 155, 185, 22);
+		general.add(txtFileAddedSuccesfully);
+		txtFileAddedSuccesfully.setColumns(10);
+		
+		txtNumberOfScans = new JTextField();
+		txtNumberOfScans.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtNumberOfScans.setText("Number of scans: ");
+		txtNumberOfScans.setEditable(false);
+		txtNumberOfScans.setBounds(15, 348, 156, 26);
+		general.add(txtNumberOfScans);
+		txtNumberOfScans.setColumns(10);
+		
+		numOfScans = new JTextField();
+		numOfScans.setFont(new Font("Tahoma", Font.BOLD, 18));
+		numOfScans.setEditable(false);
+		numOfScans.setBounds(172, 349, 65, 25);
+		general.add(numOfScans);
+		numOfScans.setColumns(10);
+		numOfScans.setText("N/A");
+		
+		txtNumberOfDiffrent = new JTextField();
+		txtNumberOfDiffrent.setText("Number of diffrent routers: ");
+		txtNumberOfDiffrent.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtNumberOfDiffrent.setEditable(false);
+		txtNumberOfDiffrent.setColumns(10);
+		txtNumberOfDiffrent.setBounds(15, 390, 233, 26);
+		general.add(txtNumberOfDiffrent);
+		
+		numOfRouters = new JTextField();
+		numOfRouters.setEditable(false);
+		numOfRouters.setFont(new Font("Tahoma", Font.BOLD, 18));
+		numOfRouters.setColumns(10);
+		numOfRouters.setBounds(247, 391, 65, 25);
+		general.add(numOfRouters);
+		
+		txtFilterInformation = new JTextField();
+		txtFilterInformation.setEditable(false);
+		txtFilterInformation.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtFilterInformation.setText("Filter Information:");
+		txtFilterInformation.setBounds(15, 432, 160, 26);
+		general.add(txtFilterInformation);
+		txtFilterInformation.setColumns(10);
+		
+		txtrFilterInformationHere = new JTextArea();
+		txtrFilterInformationHere.setFont(new Font("Monospaced", Font.PLAIN, 15));
+		txtrFilterInformationHere.setEditable(false);
+		txtrFilterInformationHere.setText("---Filter \r\nInformation\r\nhere---");
+		txtrFilterInformationHere.setBounds(183, 432, 129, 114);
+		general.add(txtrFilterInformationHere);
+		txtFileAddedSuccesfully.setVisible(false);
 		clearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				_programCore.cleanRecordsData();
 				clearButton.setEnabled(false);
 				createOutputCsvButton.setEnabled(false);
 				createOutputKmlBtn.setEnabled(false);
+				btnLoadWigglewifiDirectory.setEnabled(true);
+				AddCombCsvBtn.setEnabled(false);
 				txtDirLoaded.setVisible(false);
 				txtOutputCsvCreated.setVisible(false);
+				txtFileAddedSuccesfully.setVisible(false);
+				numOfRouters.setText("N/A");
+				numOfScans.setText("N/A");
 			}
 		});
 		txtDirLoaded.setVisible(false);
@@ -235,7 +323,10 @@ public class mainWindowUI {
 					createOutputCsvButton.setEnabled(true);
 					createOutputKmlBtn.setEnabled(true);
 					clearButton.setEnabled(true);
+					AddCombCsvBtn.setEnabled(true);
+					btnLoadWigglewifiDirectory.setEnabled(false);
 				}
+				updateInfo();
 			}
 		});
 		frame.getContentPane().setLayout(null);
@@ -545,10 +636,6 @@ public class mainWindowUI {
 			createOutputKmlBtn.setEnabled(false);
 			clearButton.setEnabled(false);
 		}
-
-
-
-
 
 	}
 }

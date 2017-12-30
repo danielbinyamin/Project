@@ -129,6 +129,12 @@ public class programCoreV2 {
 		return result;
 
 	}
+	
+	public void addCombinedCSV(String path) {
+		Records combinedToAdd = new Records();
+		combinedToAdd.loadRecordsFromFilev2(path);
+		_records.addRecords(combinedToAdd);
+	}
 
 	public void cleanRecordsData() {
 		_records = new Records();
@@ -144,6 +150,22 @@ public class programCoreV2 {
 		pathToSave +="/"+fileName;
 		File f = new File(pathToSave);
 		_records.toKml(f);
+	}
+	
+	/**This function return number of scans in program
+	 * 
+	 * @return number of scans
+	 */
+	public int scanCount() {
+		return _records.size();
+	}
+	
+	/**This function return number of diffrent MAC's in the data structure
+	 * 
+	 * @return number of routers
+	 */
+	public int diffRouterCount() {
+		return _records.numOfDiffRouter();
 	}
 	
 	public Records get_records() {

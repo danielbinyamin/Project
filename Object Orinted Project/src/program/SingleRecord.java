@@ -11,14 +11,14 @@ import java.util.Collections;
  * @author Daniel
  *
  */
-public class SingleRecord {
+public class SingleRecord implements Comparable<SingleRecord> {
 	private Point2D _location;
 	private double _altitude;
 	private Calendar _date;
 	private ArrayList<Wifi> _WifiList;
 	private String _id;
 
-	//constructor
+	//constructors
 	public SingleRecord(String id, ArrayList<Wifi> wifiList, String dateAndTime, double lon, double lat, double altitude) {
 		_id = new String(id);
 		_WifiList = new ArrayList<>(wifiList);
@@ -43,6 +43,16 @@ public class SingleRecord {
 		_date.set(year, month-1,day,hour,minutes,sec);
 	}
 
+	public SingleRecord(String id, ArrayList<Wifi> wifiList, Calendar date, double lon, double lat, double altitude) {
+		_id = new String(id);
+		_WifiList = new ArrayList<>(wifiList);
+		Collections.sort(this._WifiList);
+		_location = new Point2D.Double(lat,lon);
+		_altitude = altitude;
+		_date = Calendar.getInstance();
+		_date.setTime(date.getTime());		
+	}
+	
 	private String[] setDate(String date){
 		String[] dateParts = date.split("-");
 		String[] validDate = new String[3];
@@ -69,6 +79,16 @@ public class SingleRecord {
 		}
 	}
 
+	@Override
+	public int compareTo(SingleRecord otherSingleRecord) {
+		if (_date.compareTo(otherSingleRecord.get_date())>=0){
+			if (_date.compareTo(otherSingleRecord.get_date())>0)
+				return 1;
+			return 0;
+		}
+		return -1;
+	}
+	
 	//getters
 	public Point2D get_location() {
 		return _location;
@@ -89,8 +109,7 @@ public class SingleRecord {
 	public String get_id() {
 		return _id;
 	}
-	
-	
+
 
 	public void set_location(Point2D _location) {
 		double lat = _location.getX();
@@ -104,6 +123,10 @@ public class SingleRecord {
 
 	public void set_id(String _id) {
 		this._id = _id;
+	}
+	
+	public void set_date(Calendar date) {
+		_date.setTime(date.getTime());
 	}
 
 	//toString method
