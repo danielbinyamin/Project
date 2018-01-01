@@ -5,6 +5,9 @@ import javax.swing.filechooser.FileSystemView;
 
 public class dirChooserToLoad {
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public static String run() {
 
 		JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());

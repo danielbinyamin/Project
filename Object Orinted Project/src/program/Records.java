@@ -322,6 +322,15 @@ public class Records  {
 		}
 		return new Records(filterd);
 	}
+	
+	public Records filterv2(Filter f) {
+		ArrayList<SingleRecord> filterd = new ArrayList<SingleRecord>();
+		for (SingleRecord singleRecord : _records) {
+			if(f.checkFilterOverSingleRecord(singleRecord))
+				filterd.add(singleRecord);
+		}
+		return new Records(filterd);
+	}
 
 	public boolean isEmpty() {
 		return _records.size()==0;

@@ -13,17 +13,20 @@ import java.util.Map;
 public class programCoreV2 {
 	//members
 	private Records _records;
-
+	private Records _filteredRecords;
+	
 	//constructors
 	public programCoreV2(Records records) {
 		_records = new Records(records);
+		_filteredRecords = new Records();
 	}
 	
 	public programCoreV2() {
-		_records = new Records();		
+		_records = new Records();
+		_filteredRecords = new Records();
 	}
 
-	//methods
+	//Methods
 	/**
 	 * This function converts a string to date in the right format for KML files.
 	 * @param date - a string represents the date to convert.
@@ -152,6 +155,10 @@ public class programCoreV2 {
 		_records.toKml(f);
 	}
 	
+	public void filter(FilterForRecords filter) {
+		_filteredRecords = _records.filterv2(filter.get_filters());
+	}
+	
 	/**This function return number of scans in program
 	 * 
 	 * @return number of scans
@@ -172,6 +179,15 @@ public class programCoreV2 {
 		return _records;
 	}
 	
+	public void setFilteredRecords(Records other) {
+		_filteredRecords = new Records(other);
+	}
+	
+	public void switchRecords() {
+		Records temp = new Records(_records);
+		_records = new Records(_filteredRecords);
+		_filteredRecords = new Records(temp);
+	}
 
 
 	/**

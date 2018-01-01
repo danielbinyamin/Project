@@ -3,12 +3,13 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/KML api/activation-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/KML api/JavaAPIforKml-2.2.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/KML api/jaxb-api-2.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/KML api/jaxb-impl-2.1.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/KML api/jsr173_api-1.0.jar"/>
-	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar" sourcepath="jgoodies-forms-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/ExternalJars/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/ExternalJars/JavaAPIforKml-2.2.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/ExternalJars/jaxb-api-2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/ExternalJars/jaxb-impl-2.1.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/ExternalJars/jgoodies-forms-1.8.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/ExternalJars/jgoodies-forms-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/ExternalJars/jsr173_api-1.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/danie/git/Project/Object Orinted Project/ExternalJars/LGoodDatePicker-10.3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

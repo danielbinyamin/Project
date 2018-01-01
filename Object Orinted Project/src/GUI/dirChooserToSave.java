@@ -7,7 +7,10 @@ import javax.swing.filechooser.FileSystemView;
 
 public class dirChooserToSave {
 
-	public static String run() {
+	/**
+	 * @wbp.parser.entryPoint
+	 */
+	public String run() {
 
 		JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 		jfc.setDialogTitle("Choose a directory to save output file: ");

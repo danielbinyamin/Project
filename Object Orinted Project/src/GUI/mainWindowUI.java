@@ -3,8 +3,10 @@ package GUI;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import program.FilterForRecords;
 import program.Records;
 import program.programCoreV2;
 
@@ -21,6 +23,8 @@ import javax.swing.event.ChangeListener;
 
 import org.omg.stub.java.rmi._Remote_Stub;
 
+import de.micromata.opengis.kml.v_2_2_0.DisplayMode;
+
 import javax.swing.event.ChangeEvent;
 import javax.swing.JTextField;
 import java.awt.Color;
@@ -32,16 +36,22 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 
 import java.awt.Component;
+import java.awt.Dialog;
+
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
+
 import java.awt.Rectangle;
 import javax.swing.JTextPane;
 import javax.swing.JTextArea;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
 
 public class mainWindowUI {
 
 	private JFrame frame;
 	private programCoreV2 _programCore;
+	private FilterForRecords _filters;
 	private String outputDir;
 	private JTextField txtDirLoaded;
 	private JTextField txtOutputCsvCreated;
@@ -74,6 +84,9 @@ public class mainWindowUI {
 	private JTextField numOfRouters;
 	private JTextField txtFilterInformation;
 	private JTextArea txtrFilterInformationHere;
+	private JTextPane txtpncurrentFilterInformation;
+	private JButton btnApplyFilter;
+	private JButton btnClearFilter;
 
 	/**
 	 * Launch the application.
@@ -99,12 +112,16 @@ public class mainWindowUI {
 		initialize();
 		numOfRouters.setText("N/A");
 	}
-	
+
 	private void updateInfo() {
 		int numOfScansInt = _programCore.scanCount();
 		int numOfRoutersInt = _programCore.diffRouterCount();
 		numOfScans.setText(Integer.toString(numOfScansInt));
 		numOfRouters.setText(Integer.toString(numOfRoutersInt));
+	}
+
+	public void updateFilterInfo() {
+		txtpncurrentFilterInformation.setText(_filters.toString());
 	}
 
 	/**
@@ -248,7 +265,7 @@ public class mainWindowUI {
 		txtFileAddedSuccesfully.setBounds(786, 155, 185, 22);
 		general.add(txtFileAddedSuccesfully);
 		txtFileAddedSuccesfully.setColumns(10);
-		
+
 		txtNumberOfScans = new JTextField();
 		txtNumberOfScans.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtNumberOfScans.setText("Number of scans: ");
@@ -256,7 +273,7 @@ public class mainWindowUI {
 		txtNumberOfScans.setBounds(15, 348, 156, 26);
 		general.add(txtNumberOfScans);
 		txtNumberOfScans.setColumns(10);
-		
+
 		numOfScans = new JTextField();
 		numOfScans.setFont(new Font("Tahoma", Font.BOLD, 18));
 		numOfScans.setEditable(false);
@@ -264,7 +281,7 @@ public class mainWindowUI {
 		general.add(numOfScans);
 		numOfScans.setColumns(10);
 		numOfScans.setText("N/A");
-		
+
 		txtNumberOfDiffrent = new JTextField();
 		txtNumberOfDiffrent.setText("Number of diffrent routers: ");
 		txtNumberOfDiffrent.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -272,14 +289,14 @@ public class mainWindowUI {
 		txtNumberOfDiffrent.setColumns(10);
 		txtNumberOfDiffrent.setBounds(15, 390, 233, 26);
 		general.add(txtNumberOfDiffrent);
-		
+
 		numOfRouters = new JTextField();
 		numOfRouters.setEditable(false);
 		numOfRouters.setFont(new Font("Tahoma", Font.BOLD, 18));
 		numOfRouters.setColumns(10);
 		numOfRouters.setBounds(247, 391, 65, 25);
 		general.add(numOfRouters);
-		
+
 		txtFilterInformation = new JTextField();
 		txtFilterInformation.setEditable(false);
 		txtFilterInformation.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -287,7 +304,7 @@ public class mainWindowUI {
 		txtFilterInformation.setBounds(15, 432, 160, 26);
 		general.add(txtFilterInformation);
 		txtFilterInformation.setColumns(10);
-		
+
 		txtrFilterInformationHere = new JTextArea();
 		txtrFilterInformationHere.setFont(new Font("Monospaced", Font.PLAIN, 15));
 		txtrFilterInformationHere.setEditable(false);
@@ -327,6 +344,7 @@ public class mainWindowUI {
 					btnLoadWigglewifiDirectory.setEnabled(false);
 				}
 				updateInfo();
+
 			}
 		});
 		frame.getContentPane().setLayout(null);
@@ -347,17 +365,71 @@ public class mainWindowUI {
 		JButton addFilterBtn = new JButton("Add filter +");
 		addFilterBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				filterPicker filterChoose = new filterPicker();
+				String relation = "";
+				if(_filters.getNumOfFilters()>=1) {
+					final JPanel panel = new JPanel();
+					final JRadioButton andRelation = new JRadioButton("And");
+					final JRadioButton orRelation = new JRadioButton("Or");
+					ButtonGroup gr = new ButtonGroup();
+					andRelation.setSelected(true);
+					gr.add(andRelation);
+					gr.add(orRelation);
+					panel.add(andRelation);
+					panel.add(orRelation);       
+					JOptionPane.showMessageDialog(frame, panel,"Choose relation for this filter:",1);
+
+					if(andRelation.isSelected())
+						relation="&&";
+					else
+						relation="||";
+
+				}
+				filterPicker filterChoose = new filterPicker(_filters, relation);
 				filterChoose.run();
+				updateFilterInfo();
+				if(_filters.getNumOfFilters()>0) {
+					btnApplyFilter.setEnabled(true);
+					btnClearFilter.setEnabled(true);
+				}
+				if(_filters.getNumOfFilters()==2)
+					addFilterBtn.setEnabled(false);
 			}
 		});
 		addFilterBtn.setBounds(801, 230, 156, 33);
 		filterOptions.add(addFilterBtn);
 
-		JTextPane txtpncurrentFilterInformation = new JTextPane();
-		txtpncurrentFilterInformation.setText("-------current filter information here----------");
+		txtpncurrentFilterInformation = new JTextPane();
+		txtpncurrentFilterInformation.setEditable(false);
+		txtpncurrentFilterInformation.setText("No filter selected");
 		txtpncurrentFilterInformation.setBounds(45, 426, 210, 116);
 		filterOptions.add(txtpncurrentFilterInformation);
+
+		btnApplyFilter = new JButton("Apply filter");
+		btnApplyFilter.setEnabled(false);
+		btnApplyFilter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				_programCore.filter(_filters);
+				_programCore.switchRecords();
+				updateInfo();
+				btnApplyFilter.setEnabled(false);
+			}
+		});
+		btnApplyFilter.setBounds(801, 509, 156, 33);
+		filterOptions.add(btnApplyFilter);
+
+		btnClearFilter = new JButton("Clear filter");
+		btnClearFilter.setEnabled(false);
+		btnClearFilter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				_filters = new FilterForRecords();
+				updateFilterInfo();
+				btnClearFilter.setEnabled(false);
+				btnApplyFilter.setEnabled(false);
+				addFilterBtn.setEnabled(true);
+			}
+		});
+		btnClearFilter.setBounds(801, 448, 156, 33);
+		filterOptions.add(btnClearFilter);
 
 		//----------------------------------------------------------Algorithms-----------------------------------------------------------//
 
@@ -631,6 +703,7 @@ public class mainWindowUI {
 		frame.getContentPane().add(tabs);
 
 		_programCore = new programCoreV2();
+		_filters = new FilterForRecords(_programCore.get_records());
 		if (_programCore.isRecordsEmpty()) {
 			createOutputCsvButton.setEnabled(false);
 			createOutputKmlBtn.setEnabled(false);
