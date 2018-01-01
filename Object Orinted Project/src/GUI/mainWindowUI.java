@@ -83,11 +83,13 @@ public class mainWindowUI {
 	private JTextField txtNumberOfDiffrent;
 	private JTextField numOfRouters;
 	private JTextField txtFilterInformation;
-	private JTextArea txtrFilterInformationHere;
 	private JTextPane txtpncurrentFilterInformation;
 	private JButton btnApplyFilter;
 	private JButton btnClearFilter;
-
+	private JButton saveFilterBtn;
+	private JTextPane txtFilterInfoGeneral;
+	private JButton revertBtn;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -118,6 +120,7 @@ public class mainWindowUI {
 		int numOfRoutersInt = _programCore.diffRouterCount();
 		numOfScans.setText(Integer.toString(numOfScansInt));
 		numOfRouters.setText(Integer.toString(numOfRoutersInt));
+		txtFilterInfoGeneral.setText(_filters.toString());
 	}
 
 	public void updateFilterInfo() {
@@ -146,10 +149,20 @@ public class mainWindowUI {
 		tabs.add("General",general); 
 		tabs.setFont(new Font("Tahoma", Font.PLAIN, 20));
 
-		JButton revertBtn = new JButton("Revert back(Cancel filters)");
+		revertBtn = new JButton("Revert back(Cancel filters)");
 		revertBtn.setBounds(85, 16, 252, 31);
+		revertBtn.setEnabled(false);
 		revertBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				_programCore.switchRecords();
+				_programCore.cleanFilteredRecords();
+				_filters.cleanFilter();
+				updateFilterInfo();
+				updateInfo();
+				revertBtn.setEnabled(false);
+				btnClearFilter.setEnabled(false);
+				btnApplyFilter.setEnabled(false);
+				saveFilterBtn.setEnabled(false);
 			}
 		});
 		general.setLayout(null);
@@ -189,7 +202,8 @@ public class mainWindowUI {
 		AddCombCsvBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				fileChooser fl = new fileChooser();
-				String combinedCsv = fl.run();
+				try {
+				String combinedCsv = fl.run("Choose combined .csv file:");
 				try {
 					_programCore.addCombinedCSV(combinedCsv);
 				}
@@ -203,6 +217,11 @@ public class mainWindowUI {
 				clearButton.setEnabled(true);
 				updateInfo();
 			}
+				catch (NullPointerException e2) {
+					// do nothing
+				}
+			}
+
 		});
 		AddCombCsvBtn.setBounds(776, 120, 195, 38);
 		general.add(AddCombCsvBtn);
@@ -224,12 +243,17 @@ public class mainWindowUI {
 
 		createOutputKmlBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				dirChooserToSave dir = new dirChooserToSave();
-				outputDir = dir.run();
+				dirChooser dir = new dirChooser();
+				try {
+				outputDir = dir.run("Choose path to save output kml:");
 				_programCore.createKMLfromRecords(outputDir);
 				txtOutputCsvCreated.setText("output kml created at: "+ outputDir);
 				txtOutputCsvCreated.setVisible(true);
-				System.out.println("Succesfully created output file at: " + outputDir);		
+				System.out.println("Succesfully created output file at: " + outputDir);	
+				}
+				catch (NullPointerException e) {
+					//do nothing
+				}
 			}
 		});
 		createOutputKmlBtn.setBounds(634, 541, 160, 34);
@@ -249,11 +273,16 @@ public class mainWindowUI {
 		txtOutputCsvCreated.setVisible(false);
 		createOutputCsvButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dirChooserToSave dir = new dirChooserToSave();
-				outputDir = dir.run();
+				dirChooser dir = new dirChooser();
+				try {
+				outputDir = dir.run("Choose path to save output csv: ");
 				_programCore.createCSVfromRecords(outputDir);
 				txtOutputCsvCreated.setText("output csv created at: "+ outputDir);
 				txtOutputCsvCreated.setVisible(true);
+				}
+				catch (NullPointerException e3) {
+					// do nothing
+				}
 			}		
 		});
 		clearButton.setEnabled(false);
@@ -304,13 +333,14 @@ public class mainWindowUI {
 		txtFilterInformation.setBounds(15, 432, 160, 26);
 		general.add(txtFilterInformation);
 		txtFilterInformation.setColumns(10);
-
-		txtrFilterInformationHere = new JTextArea();
-		txtrFilterInformationHere.setFont(new Font("Monospaced", Font.PLAIN, 15));
-		txtrFilterInformationHere.setEditable(false);
-		txtrFilterInformationHere.setText("---Filter \r\nInformation\r\nhere---");
-		txtrFilterInformationHere.setBounds(183, 432, 129, 114);
-		general.add(txtrFilterInformationHere);
+		
+		txtFilterInfoGeneral = new JTextPane();
+		txtFilterInfoGeneral.setText("No filter selected");
+		txtFilterInfoGeneral.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 15));
+		txtFilterInfoGeneral.setEditable(false);
+		txtFilterInfoGeneral.setBackground(Color.LIGHT_GRAY);
+		txtFilterInfoGeneral.setBounds(180, 430, 266, 116);
+		general.add(txtFilterInfoGeneral);
 		txtFileAddedSuccesfully.setVisible(false);
 		clearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -330,8 +360,9 @@ public class mainWindowUI {
 		txtDirLoaded.setVisible(false);
 		btnLoadWigglewifiDirectory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				dirChooserToLoad dir = new dirChooserToLoad();
-				String wiggleDir = dir.run();
+				dirChooser dir = new dirChooser();
+				try {
+				String wiggleDir = dir.run("Choose WiggleWifi path: ");
 				_programCore = new programCoreV2();
 				_programCore.loadRecordsFromWiggleDir(wiggleDir);
 				txtDirLoaded.setVisible(true);
@@ -344,7 +375,10 @@ public class mainWindowUI {
 					btnLoadWigglewifiDirectory.setEnabled(false);
 				}
 				updateInfo();
-
+				}
+				catch (NullPointerException e) {
+					//do nothing
+				}
 			}
 		});
 		frame.getContentPane().setLayout(null);
@@ -354,12 +388,46 @@ public class mainWindowUI {
 		tabs.add("filterOptions",filterOptions);
 		filterOptions.setLayout(null);
 
-		JButton saveFilterBtn = new JButton("Save current filter");
-		saveFilterBtn.setBounds(801, 30, 156, 33);
+		saveFilterBtn = new JButton("Save current filter");
+		saveFilterBtn.setEnabled(false);
+		saveFilterBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dirChooser dir = new dirChooser();
+				try {
+				String path = dir.run("Choose path to save filter:");
+				try {
+					_filters.saveFilterToDisk(path);
+				} catch (Exception e2) {
+					System.out.println("Error saving filter \n"+e2);
+				}
+				}
+				catch (NullPointerException e4) {
+					//do nothing
+				}
+				
+			}
+		});
+		saveFilterBtn.setBounds(801, 180, 156, 33);
 		filterOptions.add(saveFilterBtn);
 
 		JButton loadExternalFilterBtn = new JButton("Load external filter");
-		loadExternalFilterBtn.setBounds(801, 130, 156, 33);
+		loadExternalFilterBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fileChooser f = new fileChooser();
+				try {
+				String path = f.run("Choose external filter");
+				_filters = new FilterForRecords(path);
+				updateFilterInfo();
+				btnApplyFilter.setEnabled(true);
+				btnClearFilter.setEnabled(true);
+				saveFilterBtn.setEnabled(true);
+				}
+				catch (NullPointerException e3) {
+					//do nothing
+				}
+			}
+		});
+		loadExternalFilterBtn.setBounds(801, 13, 156, 33);
 		filterOptions.add(loadExternalFilterBtn);
 
 		JButton addFilterBtn = new JButton("Add filter +");
@@ -390,18 +458,21 @@ public class mainWindowUI {
 				if(_filters.getNumOfFilters()>0) {
 					btnApplyFilter.setEnabled(true);
 					btnClearFilter.setEnabled(true);
+					saveFilterBtn.setEnabled(true);
 				}
 				if(_filters.getNumOfFilters()==2)
 					addFilterBtn.setEnabled(false);
 			}
 		});
-		addFilterBtn.setBounds(801, 230, 156, 33);
+		addFilterBtn.setBounds(801, 93, 156, 33);
 		filterOptions.add(addFilterBtn);
 
 		txtpncurrentFilterInformation = new JTextPane();
+		txtpncurrentFilterInformation.setBackground(Color.LIGHT_GRAY);
+		txtpncurrentFilterInformation.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 15));
 		txtpncurrentFilterInformation.setEditable(false);
 		txtpncurrentFilterInformation.setText("No filter selected");
-		txtpncurrentFilterInformation.setBounds(45, 426, 210, 116);
+		txtpncurrentFilterInformation.setBounds(45, 426, 266, 116);
 		filterOptions.add(txtpncurrentFilterInformation);
 
 		btnApplyFilter = new JButton("Apply filter");
@@ -412,9 +483,10 @@ public class mainWindowUI {
 				_programCore.switchRecords();
 				updateInfo();
 				btnApplyFilter.setEnabled(false);
+				revertBtn.setEnabled(true);
 			}
 		});
-		btnApplyFilter.setBounds(801, 509, 156, 33);
+		btnApplyFilter.setBounds(801, 534, 156, 33);
 		filterOptions.add(btnApplyFilter);
 
 		btnClearFilter = new JButton("Clear filter");
@@ -425,10 +497,11 @@ public class mainWindowUI {
 				updateFilterInfo();
 				btnClearFilter.setEnabled(false);
 				btnApplyFilter.setEnabled(false);
+				saveFilterBtn.setEnabled(false);
 				addFilterBtn.setEnabled(true);
 			}
 		});
-		btnClearFilter.setBounds(801, 448, 156, 33);
+		btnClearFilter.setBounds(801, 488, 156, 33);
 		filterOptions.add(btnClearFilter);
 
 		//----------------------------------------------------------Algorithms-----------------------------------------------------------//
@@ -703,7 +776,7 @@ public class mainWindowUI {
 		frame.getContentPane().add(tabs);
 
 		_programCore = new programCoreV2();
-		_filters = new FilterForRecords(_programCore.get_records());
+		_filters = new FilterForRecords();
 		if (_programCore.isRecordsEmpty()) {
 			createOutputCsvButton.setEnabled(false);
 			createOutputKmlBtn.setEnabled(false);

@@ -19,30 +19,19 @@ public class FilterForRecords implements  Serializable {
 	private static final long serialVersionUID = -167545388393389747L;
 	//members
 	private Filter _f;
-	private Records _records;
 	private String toString;
 
 	//Constructors
 	
 	public FilterForRecords(FilterForRecords other) {
 		_f = new Filter(other.get_filters());
-		_records = new Records(other.get_records());
 		toString = other.toString();
 	}
 	
 	public FilterForRecords() {
 		_f = new Filter();
-		_records = new Records();
-		toString = "No_filters";
+		toString = "No filter selected";
 	}
-	
-	//construct from Records
-	public FilterForRecords(Records records) {
-		_records = new Records(records);
-		_f = new Filter();
-		toString = "No_filters";
-	}
-
 	//Construct from Deserialized external object in path
 	public FilterForRecords(String path) {
 		FilterForRecords temp = null;
@@ -52,16 +41,8 @@ public class FilterForRecords implements  Serializable {
 			temp = (FilterForRecords) in.readObject();
 			in.close();
 			fileIn.close();
-//			_filters = new ArrayList<Condition>(temp.get_filters());
 			_f = new Filter(temp.get_filters());
-			_records = new Records(temp.get_records());
 			toString = temp.toString();
-//			try {
-//				_relations = new ArrayList<String>(temp.get_relations());
-//			}
-//			catch (NullPointerException e) {
-//				_relations = new ArrayList<String>();
-//			}
 		} catch (IOException i) {
 			System.out.println("Error loading Filter\n");
 			i.printStackTrace();
@@ -85,7 +66,6 @@ public class FilterForRecords implements  Serializable {
 		}	
 		
 		_f = new Filter(timeCondition);	
-		_records = _records.filterv2(_f);
 		
 	}
 
@@ -102,7 +82,6 @@ public class FilterForRecords implements  Serializable {
 		}
 		
 		_f = new Filter(locationCondition);	
-		_records = _records.filterv2(_f);	
 	}
 	
 	public void createIDFilter(String id, boolean not) {
@@ -117,7 +96,6 @@ public class FilterForRecords implements  Serializable {
 		}
 		
 		_f = new Filter(idCondition);	
-		_records = _records.filterv2(_f);		
 	}
 
 	public void addDateFilter(Calendar beginDate, Calendar endDate, boolean not, String relation) {
@@ -132,7 +110,6 @@ public class FilterForRecords implements  Serializable {
 		}
 		
 		_f.addFilter(timeCondition, relation);
-		_records = _records.filterv2(_f);
 	}
 	
 	public void addLocationFilter(double lat, double lon, double radius, boolean not, String relation) {
@@ -149,7 +126,6 @@ public class FilterForRecords implements  Serializable {
 		}
 		
 		_f.addFilter(locationCondition, relation);
-		_records = _records.filterv2(_f);
 	}
 
 	public void addIDFilter(String id, boolean not, String relation) {
@@ -164,12 +140,11 @@ public class FilterForRecords implements  Serializable {
 		}
 		
 		_f.addFilter(idCondition, relation);	
-		_records = _records.filterv2(_f);	
 	}
 
 	public void saveFilterToDisk(String path) throws IOException {
 		try {
-			FileOutputStream fileOut = new FileOutputStream(path+this.toString()+".ser");
+			FileOutputStream fileOut = new FileOutputStream(path+"\\"+this.toString()+".ser");
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(this);
 			out.close();
@@ -180,13 +155,14 @@ public class FilterForRecords implements  Serializable {
 		}
 	}
 
+	public void cleanFilter() {
+		_f = new Filter();
+		toString = "No filter selected";
+	}
+	
 	//Getters
 	public Filter get_filters() {
 		return _f;
-	}
-
-	public Records get_records() {
-		return _records;
 	}
 
 	public int getNumOfFilters() {

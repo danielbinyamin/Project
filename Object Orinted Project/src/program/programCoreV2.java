@@ -188,6 +188,10 @@ public class programCoreV2 {
 		_records = new Records(_filteredRecords);
 		_filteredRecords = new Records(temp);
 	}
+	
+	public void cleanFilteredRecords() {
+		_filteredRecords = new Records();
+	}
 
 
 	/**

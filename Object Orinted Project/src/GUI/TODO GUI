@@ -1,27 +1,10 @@
 TODO list:
-
--info about filter.
-
--Add filter option.
-	-by date
-	-by location
-	-by id
 	
--create NOT option
-
--create relations between filters.
-
--save filter.
-
--load filter.
-
--revert back(cancel filter).
+-filter fileChooser to show only .csv
 	
 edge cases:
 
 	-deal with duplicates.
-
-	-filter fileChooser to show only .csv
 
 	-deal with mac not found in Algo1.
 
@@ -29,6 +12,8 @@ edge cases:
 	
 	-invalid input in algorithms
 	
-	-invalid input in filters
+	-invalid input in filters.
+	
+	-filter over empty data base.
 
 	
