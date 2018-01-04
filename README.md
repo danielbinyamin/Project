@@ -2,13 +2,14 @@
 
 This is an ongoing project on our Object Oriented course in Ariel university.
 Authors: Daniel Binyamin & Tal Gropper.
-This project recives variouse scans captured from the WiggleWifi android app and puts together a main csv file which joins all this information into one. We have implemented an option to filter the main CSV by various choices and export this filter to a KML file which can be viewed on Google Earth.
+This project recives variouse scans captured from the WiggleWifi android app and puts together a main csv file which joins all this information into one.
+We have implemented an option to filter the main CSV by various choices and export this filter to a KML file which can be viewed on Google Earth.
+We also implemented an algorithm to find user location by 3 MACs ans their signals, and another algorithm to find Rother location its MAC address.
 
 *Run Instrucios*
 
-The program now has only console-UI.
-In a few weeks a GUI will be added.
-For now, To run the program you will need to run "consoleUI" class.
+The program can be controlled by a Graphic User Interface.
+To run the program you will need to run "MainWinfowUI" class.
 Once run, you will be asked to enter the path to your WiggleWifi scans.
 Then you will be asked to enter the path to which you want your output.csv file to be created to.
 At this point you have an output.csv file ready at the directory you chose.
