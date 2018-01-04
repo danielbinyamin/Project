@@ -14,6 +14,14 @@ import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.awt.event.ActionEvent;
@@ -21,6 +29,7 @@ import java.awt.Button;
 import java.awt.List;
 import javax.swing.event.ChangeListener;
 
+import org.omg.CORBA._PolicyStub;
 import org.omg.stub.java.rmi._Remote_Stub;
 
 import de.micromata.opengis.kml.v_2_2_0.DisplayMode;
@@ -49,10 +58,10 @@ import javax.swing.JRadioButton;
 
 public class mainWindowUI {
 
-	private JFrame frame;
-	private programCoreV2 _programCore;
-	private FilterForRecords _filters;
-	private String outputDir;
+	private static JFrame frame;
+	private static programCoreV2 _programCore;
+	private static FilterForRecords _filters;
+	private static String outputDir;
 	private JTextField txtDirLoaded;
 	private JTextField txtOutputCsvCreated;
 	private JTextField txtSaveDataAs;
@@ -79,17 +88,21 @@ public class mainWindowUI {
 	private JTextField altAnswerAlgo2;
 	private JTextField txtFileAddedSuccesfully;
 	private JTextField txtNumberOfScans;
-	private JTextField numOfScans;
+	private static JTextField numOfScans;
 	private JTextField txtNumberOfDiffrent;
-	private JTextField numOfRouters;
+	private static JTextField numOfRouters;
 	private JTextField txtFilterInformation;
 	private JTextPane txtpncurrentFilterInformation;
 	private JButton btnApplyFilter;
 	private JButton btnClearFilter;
 	private JButton saveFilterBtn;
-	private JTextPane txtFilterInfoGeneral;
+	private static JTextPane txtFilterInfoGeneral;
 	private JButton revertBtn;
-	
+	private static Thread dirThread;
+	private static String wiggleDir;
+	private static ArrayList<String> combinedCSVFileList;
+	private static Thread filesThread;
+
 	/**
 	 * Launch the application.
 	 */
@@ -99,7 +112,6 @@ public class mainWindowUI {
 				try {
 					mainWindowUI window = new mainWindowUI();
 					window.frame.setVisible(true);
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -115,7 +127,7 @@ public class mainWindowUI {
 		numOfRouters.setText("N/A");
 	}
 
-	private void updateInfo() {
+	private static void updateInfo() {
 		int numOfScansInt = _programCore.scanCount();
 		int numOfRoutersInt = _programCore.diffRouterCount();
 		numOfScans.setText(Integer.toString(numOfScansInt));
@@ -126,6 +138,103 @@ public class mainWindowUI {
 	public void updateFilterInfo() {
 		txtpncurrentFilterInformation.setText(_filters.toString());
 	}
+
+	private static boolean dirWatch(String dir) throws IOException, InterruptedException {
+
+		Path path = Paths.get(dir+"\\");
+		WatchService watchService = path.getFileSystem().newWatchService();
+
+		path.register(watchService,
+				StandardWatchEventKinds.ENTRY_CREATE,
+				StandardWatchEventKinds.ENTRY_MODIFY,
+				StandardWatchEventKinds.ENTRY_DELETE);
+
+		while(true) {
+			WatchKey watchKey = watchService.take();
+
+			for (WatchEvent<?> event : watchKey.pollEvents()) {
+				WatchEvent.Kind<?> k = event.kind();
+				if(k==StandardWatchEventKinds.ENTRY_CREATE) 
+					return true;			
+				else if(k==StandardWatchEventKinds.ENTRY_MODIFY) 
+					return true;
+				else if(k==StandardWatchEventKinds.ENTRY_DELETE) 
+					return true;
+			}
+
+			if(!watchKey.reset()) {
+				watchKey.cancel();
+				watchService.close();
+			}
+		}
+	}//end F
+
+	private static void runDirWatch() {
+		try {
+			boolean b = dirWatch(wiggleDir);
+			int result=0;
+			while(!dirThread.isInterrupted()) {
+				if(b) 
+					result = JOptionPane.showOptionDialog(frame, "A change has been detected in WiggleWifi Directory. Would you want to update?", "Update", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null,null,null);
+				if(result == JOptionPane.OK_OPTION) {//accepted an update
+					_programCore.loadRecordsFromWiggleDir(wiggleDir);
+					updateInfo();
+				}
+				b = dirWatch(wiggleDir);
+
+			}
+		}
+		catch (IOException e) {
+			System.out.println("Error at dirWatch thread");
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			//do nothing
+		}
+	}
+
+	private static void runFilesWatch(ArrayList<String> combCSVFiles) throws InterruptedException {
+
+		ArrayList<Long> combCSVFilesLastModif = new ArrayList<>();
+		int result=0;
+
+		//fill last modified information of all combined csv files
+		for (int i = 0; i < combCSVFiles.size(); i++) 
+			combCSVFilesLastModif.add(new File(combCSVFiles.get(i)).lastModified());
+
+		while(!filesThread.isInterrupted()) {
+			Thread.sleep(500);
+			//loop over all files
+			for (int i = 0; i < combCSVFiles.size(); i++) {
+				File currentFile = new File(combCSVFiles.get(i));
+				long currentFileLastModif = currentFile.lastModified();
+				if(currentFileLastModif!=combCSVFilesLastModif.get(i)) {//a change has been detected
+
+					if(currentFileLastModif==0) { //file has been deleted
+						combCSVFiles.remove(i);
+						combCSVFilesLastModif.remove(i);
+						result = JOptionPane.showOptionDialog(frame, "A Combined CSV has been deleted. Would you want to update?", "Update", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null,null,null);
+						if(result == JOptionPane.OK_OPTION) {//accepted an update
+
+							//TODO: deal with a combined file deleted
+
+						}
+					}
+
+					else { //file has been edited
+						combCSVFilesLastModif.set(i, currentFileLastModif);
+						result = JOptionPane.showOptionDialog(frame, "A Combined CSV has been deleted. Would you want to update?", "Update", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null,null,null);
+						if(result == JOptionPane.OK_OPTION) {//accepted an update
+
+							//TODO: deal with a combined file modifed
+
+						}
+
+					}
+				}
+			}
+		}
+	}
+
 
 	/**
 	 * Initialize the contents of the frame.
@@ -203,20 +312,20 @@ public class mainWindowUI {
 			public void actionPerformed(ActionEvent e) {
 				fileChooser fl = new fileChooser();
 				try {
-				String combinedCsv = fl.run("Choose combined .csv file:");
-				try {
-					_programCore.addCombinedCSV(combinedCsv);
+					String combinedCsv = fl.run("Choose combined .csv file:");
+					try {
+						_programCore.addCombinedCSV(combinedCsv);
+					}
+					catch(NullPointerException ex) {
+						_programCore = new programCoreV2();
+						_programCore.addCombinedCSV(combinedCsv);
+					}
+					txtFileAddedSuccesfully.setVisible(true);
+					createOutputCsvButton.setEnabled(true);
+					createOutputKmlBtn.setEnabled(true);
+					clearButton.setEnabled(true);
+					updateInfo();
 				}
-				catch(NullPointerException ex) {
-					_programCore = new programCoreV2();
-					_programCore.addCombinedCSV(combinedCsv);
-				}
-				txtFileAddedSuccesfully.setVisible(true);
-				createOutputCsvButton.setEnabled(true);
-				createOutputKmlBtn.setEnabled(true);
-				clearButton.setEnabled(true);
-				updateInfo();
-			}
 				catch (NullPointerException e2) {
 					// do nothing
 				}
@@ -245,11 +354,11 @@ public class mainWindowUI {
 			public void actionPerformed(ActionEvent arg0) {
 				dirChooser dir = new dirChooser();
 				try {
-				outputDir = dir.run("Choose path to save output kml:");
-				_programCore.createKMLfromRecords(outputDir);
-				txtOutputCsvCreated.setText("output kml created at: "+ outputDir);
-				txtOutputCsvCreated.setVisible(true);
-				System.out.println("Succesfully created output file at: " + outputDir);	
+					outputDir = dir.run("Choose path to save output kml:");
+					_programCore.createKMLfromRecords(outputDir);
+					txtOutputCsvCreated.setText("output kml created at: "+ outputDir);
+					txtOutputCsvCreated.setVisible(true);
+					System.out.println("Succesfully created output file at: " + outputDir);	
 				}
 				catch (NullPointerException e) {
 					//do nothing
@@ -275,10 +384,10 @@ public class mainWindowUI {
 			public void actionPerformed(ActionEvent e) {
 				dirChooser dir = new dirChooser();
 				try {
-				outputDir = dir.run("Choose path to save output csv: ");
-				_programCore.createCSVfromRecords(outputDir);
-				txtOutputCsvCreated.setText("output csv created at: "+ outputDir);
-				txtOutputCsvCreated.setVisible(true);
+					outputDir = dir.run("Choose path to save output csv: ");
+					_programCore.createCSVfromRecords(outputDir);
+					txtOutputCsvCreated.setText("output csv created at: "+ outputDir);
+					txtOutputCsvCreated.setVisible(true);
 				}
 				catch (NullPointerException e3) {
 					// do nothing
@@ -333,7 +442,7 @@ public class mainWindowUI {
 		txtFilterInformation.setBounds(15, 432, 160, 26);
 		general.add(txtFilterInformation);
 		txtFilterInformation.setColumns(10);
-		
+
 		txtFilterInfoGeneral = new JTextPane();
 		txtFilterInfoGeneral.setText("No filter selected");
 		txtFilterInfoGeneral.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 15));
@@ -355,6 +464,9 @@ public class mainWindowUI {
 				txtFileAddedSuccesfully.setVisible(false);
 				numOfRouters.setText("N/A");
 				numOfScans.setText("N/A");
+
+				dirThread.interrupt();
+
 			}
 		});
 		txtDirLoaded.setVisible(false);
@@ -362,19 +474,24 @@ public class mainWindowUI {
 			public void actionPerformed(ActionEvent arg0) {
 				dirChooser dir = new dirChooser();
 				try {
-				String wiggleDir = dir.run("Choose WiggleWifi path: ");
-				_programCore = new programCoreV2();
-				_programCore.loadRecordsFromWiggleDir(wiggleDir);
-				txtDirLoaded.setVisible(true);
-				txtOutputCsvCreated.setVisible(false);
-				if(!_programCore.get_records().isEmpty()) {
-					createOutputCsvButton.setEnabled(true);
-					createOutputKmlBtn.setEnabled(true);
-					clearButton.setEnabled(true);
-					AddCombCsvBtn.setEnabled(true);
-					btnLoadWigglewifiDirectory.setEnabled(false);
-				}
-				updateInfo();
+					wiggleDir = dir.run("Choose WiggleWifi path: ");
+					_programCore = new programCoreV2();
+					_programCore.loadRecordsFromWiggleDir(wiggleDir);
+					txtDirLoaded.setVisible(true);
+					txtOutputCsvCreated.setVisible(false);
+					if(!_programCore.get_records().isEmpty()) {
+						createOutputCsvButton.setEnabled(true);
+						createOutputKmlBtn.setEnabled(true);
+						clearButton.setEnabled(true);
+						AddCombCsvBtn.setEnabled(true);
+						btnLoadWigglewifiDirectory.setEnabled(false);
+					}
+					updateInfo();
+					dirThread = new Thread(()->{
+						runDirWatch();
+					});
+
+					dirThread.start();
 				}
 				catch (NullPointerException e) {
 					//do nothing
@@ -394,17 +511,17 @@ public class mainWindowUI {
 			public void actionPerformed(ActionEvent e) {
 				dirChooser dir = new dirChooser();
 				try {
-				String path = dir.run("Choose path to save filter:");
-				try {
-					_filters.saveFilterToDisk(path);
-				} catch (Exception e2) {
-					System.out.println("Error saving filter \n"+e2);
-				}
+					String path = dir.run("Choose path to save filter:");
+					try {
+						_filters.saveFilterToDisk(path);
+					} catch (Exception e2) {
+						System.out.println("Error saving filter \n"+e2);
+					}
 				}
 				catch (NullPointerException e4) {
 					//do nothing
 				}
-				
+
 			}
 		});
 		saveFilterBtn.setBounds(801, 180, 156, 33);
@@ -415,12 +532,12 @@ public class mainWindowUI {
 			public void actionPerformed(ActionEvent e) {
 				fileChooser f = new fileChooser();
 				try {
-				String path = f.run("Choose external filter");
-				_filters = new FilterForRecords(path);
-				updateFilterInfo();
-				btnApplyFilter.setEnabled(true);
-				btnClearFilter.setEnabled(true);
-				saveFilterBtn.setEnabled(true);
+					String path = f.run("Choose external filter");
+					_filters = new FilterForRecords(path);
+					updateFilterInfo();
+					btnApplyFilter.setEnabled(true);
+					btnClearFilter.setEnabled(true);
+					saveFilterBtn.setEnabled(true);
 				}
 				catch (NullPointerException e3) {
 					//do nothing
