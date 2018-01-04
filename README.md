@@ -33,6 +33,7 @@ you can end by entering 0.
 - A filter-for-records class, which actually wraps Filter object with a toString method and a few more. This class was declared as "serializable".
 - A locate-Router-Algo class, which represents an implementation for an algorithm that gets a MAC address, and return the estimated location of that MAC (or router device).
 - A find-user-Algo class, which represents an implementation for an algorithm that gets a few MAC addresses and their signals recorded at a point of time, and return the estimated location of the user.
+***A UML ‫‪Class‬‬ diagram class can be found also in the main folder of this project***
 
 
 To handle the KML types we used the JAK (Java api for KML) api which is part of de.micromata projects. We found a version of this api in .jar format and used it because it is more comfertable to work with as opposed to open source. We picked this api because after some research online we came to conclusion that this api is the one vastly used and which has the most example.
