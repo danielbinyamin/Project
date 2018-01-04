@@ -363,8 +363,8 @@ public class mainWindowUI {
 				dirChooser dir = new dirChooser();
 				try {
 				String wiggleDir = dir.run("Choose WiggleWifi path: ");
-				_programCore = new programCoreV2();
-				_programCore.loadRecordsFromWiggleDir(wiggleDir);
+//				_programCore = new programCoreV2();
+//				_programCore.loadRecordsFromWiggleDir(wiggleDir);
 				txtDirLoaded.setVisible(true);
 				txtOutputCsvCreated.setVisible(false);
 				if(!_programCore.get_records().isEmpty()) {
