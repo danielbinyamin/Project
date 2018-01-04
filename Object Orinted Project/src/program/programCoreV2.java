@@ -78,9 +78,9 @@ public class programCoreV2 {
 	public void filterByLocation(double lat, double lon, double radius){
 		Point2D locationPick = new Point2D.Double(lat,lon);
 		Condition locationCondition = currSingleRec->locationPick.distance(currSingleRec.get_location())<=radius;
-		Records filtByLoc = _records.filter(locationCondition);
+		Records filterByLoc = _records.filter(locationCondition);
 		String fileName = "FilteredByLocation("+lat+" , "+lon+")"+"Radius_"+radius+".kml";
-		createFilteredFile(fileName, filtByLoc);
+		createFilteredFile(fileName, filterByLoc);
 	}
 
 	/**
@@ -95,9 +95,9 @@ public class programCoreV2 {
 		Calendar beginDate = StringtoDate(begDay, begTime);
 		Calendar endDate = StringtoDate(endDay, endTime);
 		Condition timeCondition = currSingleRec->currSingleRec.get_date().compareTo(beginDate)>=0 && currSingleRec.get_date().compareTo(endDate)<=0;
-		Records filtByTime = _records.filter(timeCondition);
+		Records filterByTime = _records.filter(timeCondition);
 		String fileName = "FilteredByDate"+ begDay + "@" + begTime + endDay + "@" + endTime +".kml";
-		createFilteredFile(fileName, filtByTime);
+		createFilteredFile(fileName, filterByTime);
 	}
 
 	/**
@@ -107,9 +107,9 @@ public class programCoreV2 {
 	 */
 	public void filterByID (String id){
 		Condition idCondition = currSingleRec->currSingleRec.get_id().toLowerCase().equals(id.toLowerCase());
-		Records filtByID = _records.filter(idCondition);
+		Records filterByID = _records.filter(idCondition);
 		String fileName = "FilteredByID_"+id+".kml";
-		createFilteredFile(fileName, filtByID);
+		createFilteredFile(fileName, filterByID);
 	}
 
 	/**
