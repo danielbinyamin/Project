@@ -79,6 +79,7 @@ public class SingleRecord implements Comparable<SingleRecord> {
 		}
 	}
 
+	//comaring singleRecords is done by its date
 	@Override
 	public int compareTo(SingleRecord otherSingleRecord) {
 		if (_date.compareTo(otherSingleRecord.get_date())>=0){

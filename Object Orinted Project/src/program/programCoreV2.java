@@ -10,6 +10,13 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class is version 2 of the original class.
+ * This class is the main executable class.
+ * Each UI communicates with an instance of this class and gets the wanted output for any method.
+ * @author daniel & Tal
+ *
+ */
 public class programCoreV2 {
 	//members
 	private Records _records;
@@ -66,50 +73,6 @@ public class programCoreV2 {
 	
 	public boolean isRecordsEmpty() {
 		return _records.isEmpty();
-	}
-	
-	/**
-	 * This function filters SingleRecord objects by location.
-	 * @param lat - latitude .
-	 * @param lon - longitude .
-	 * @param radius - radius to scan. 
-	 * @return String represents a message for the user with the name and location of the file.
-	 */
-	public void filterByLocation(double lat, double lon, double radius){
-		Point2D locationPick = new Point2D.Double(lat,lon);
-		Condition locationCondition = currSingleRec->locationPick.distance(currSingleRec.get_location())<=radius;
-		Records filterByLoc = _records.filter(locationCondition);
-		String fileName = "FilteredByLocation("+lat+" , "+lon+")"+"Radius_"+radius+".kml";
-		createFilteredFile(fileName, filterByLoc);
-	}
-
-	/**
-	 * This function filters SingleRecord objects by time.
-	 * @param begDay - beginning day to scan.
-	 * @param begTime - beginning time to scan.
-	 * @param endDay - end day to scan. 
-	 * @param endTime - end time to scan.
-	 * @return String represents a message for the user with the name and location of the file.
-	 */
-	public void filterByTime (String begDay, String begTime, String endDay, String endTime){
-		Calendar beginDate = StringtoDate(begDay, begTime);
-		Calendar endDate = StringtoDate(endDay, endTime);
-		Condition timeCondition = currSingleRec->currSingleRec.get_date().compareTo(beginDate)>=0 && currSingleRec.get_date().compareTo(endDate)<=0;
-		Records filterByTime = _records.filter(timeCondition);
-		String fileName = "FilteredByDate"+ begDay + "@" + begTime + endDay + "@" + endTime +".kml";
-		createFilteredFile(fileName, filterByTime);
-	}
-
-	/**
-	 * This function filters SingleRecord objects by ID.
-	 * @param id - ID to look for.
-	 * @return String represents a message for the user with the name and location of the file.
-	 */
-	public void filterByID (String id){
-		Condition idCondition = currSingleRec->currSingleRec.get_id().toLowerCase().equals(id.toLowerCase());
-		Records filterByID = _records.filter(idCondition);
-		String fileName = "FilteredByID_"+id+".kml";
-		createFilteredFile(fileName, filterByID);
 	}
 
 	/**
@@ -217,6 +180,10 @@ public class programCoreV2 {
 		
 		return result;
 
+	}
+	
+	public boolean checkIfMacExistsInRecords(String mac) {
+		return _records.doesMacExist(mac);
 	}
 
 	/**

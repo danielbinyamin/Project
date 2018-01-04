@@ -1,19 +1,8 @@
 TODO list:
 	
--filter fileChooser to show only .csv
-	
 edge cases:
-
-	-deal with duplicates.
-
-	-deal with mac not found in Algo1.
-
-	-deal with empty/not loaded data base in algorothms.
-	
-	-invalid input in algorithms
 	
 	-invalid input in filters.
-	
-	-filter over empty data base.
+		
 
 	

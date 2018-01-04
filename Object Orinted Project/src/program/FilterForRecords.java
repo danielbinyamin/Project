@@ -14,15 +14,19 @@ import java.util.Calendar;
 public class FilterForRecords implements  Serializable {
 
 	/**
+	 * This class behaves as a wrapper class for Filter. It is specified to work with the Records object.
+	 * This class can create/add filters through its methods. It has a toString which defines the current filter at
+	 * any stage.
 	 * 
+	 * This class is Serializable and it can be loaded from a external file and be saved to external disk.
 	 */
 	private static final long serialVersionUID = -167545388393389747L;
+	
 	//members
 	private Filter _f;
 	private String toString;
 
 	//Constructors
-	
 	public FilterForRecords(FilterForRecords other) {
 		_f = new Filter(other.get_filters());
 		toString = other.toString();
@@ -53,6 +57,8 @@ public class FilterForRecords implements  Serializable {
 			return;
 		}
 	}
+	
+	//methods to create new filter
 	
 	public void createDateFilter(Calendar beginDate, Calendar endDate, boolean not) {
 		Condition timeCondition;
@@ -98,6 +104,8 @@ public class FilterForRecords implements  Serializable {
 		_f = new Filter(idCondition);	
 	}
 
+	//methods to add a a filter over existing filters
+	
 	public void addDateFilter(Calendar beginDate, Calendar endDate, boolean not, String relation) {
 		Condition timeCondition;
 		//check if NOT
@@ -142,6 +150,11 @@ public class FilterForRecords implements  Serializable {
 		_f.addFilter(idCondition, relation);	
 	}
 
+	/**
+	 * This method allows you to save current object to disk
+	 * @param path
+	 * @throws IOException
+	 */
 	public void saveFilterToDisk(String path) throws IOException {
 		try {
 			FileOutputStream fileOut = new FileOutputStream(path+"\\"+this.toString()+".ser");

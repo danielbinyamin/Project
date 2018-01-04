@@ -17,6 +17,7 @@ import de.micromata.opengis.kml.v_2_2_0.atom.Link;
 import java.lang.Math;
 
 /**
+ * NOTE: This class is not used in GUI.
  * This class is the main executable class.
  * Each UI communicates with an instance of this class and gets the wanted output for any method.
  */

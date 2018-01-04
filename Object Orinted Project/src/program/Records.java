@@ -42,9 +42,10 @@ public class Records  {
 	}
 
 
-
+	//NOT USED IN GUI
 	/**
 	 * This method loads a combined CSV into the records data structure
+	 * NOTE!! not used in GUI
 	 * @param WiggleWifi directory
 	 */
 	public void loadRecordsFromFile(String path) {
@@ -98,6 +99,10 @@ public class Records  {
 		}
 	}
 
+	/**
+	 * New version of old method. This method loads Records from a given combined csv
+	 * @param path
+	 */
 	public void loadRecordsFromFilev2(String path) {
 		BufferedReader br;
 		try {
@@ -112,7 +117,7 @@ public class Records  {
 				Calendar date = Calendar.getInstance();
 				SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
 				date.setTime(sdf.parse(dateString));
-				
+
 				String id = details[1];
 				double lat = Double.parseDouble(details[2]);
 				double lon = Double.parseDouble(details[3]);
@@ -141,6 +146,10 @@ public class Records  {
 		}
 	}
 
+	/**
+	 * This function adds external Records to current records. It will then sort the combined Records by date
+	 * @param records
+	 */
 	public void addRecords(Records records) {
 		for (SingleRecord singleRecord : records.getSingleRecordsList()) {
 			_records.add(singleRecord);
@@ -308,6 +317,7 @@ public class Records  {
 		return _records;
 	}
 
+	//old version. NOT USED IN GUI
 	/**
 	 * This method returns a filtered Records object by the c Condition
 	 * @param c (Condition).
@@ -322,7 +332,12 @@ public class Records  {
 		}
 		return new Records(filterd);
 	}
-	
+
+	/**
+	 * This is the newer filter method using the Filter class
+	 * @param f
+	 * @return
+	 */
 	public Records filterv2(Filter f) {
 		ArrayList<SingleRecord> filterd = new ArrayList<SingleRecord>();
 		for (SingleRecord singleRecord : _records) {
@@ -335,7 +350,11 @@ public class Records  {
 	public boolean isEmpty() {
 		return _records.size()==0;
 	}
-	
+
+	/**
+	 * This function returns all the different MAC's in the Records as a list.
+	 * @return
+	 */
 	public ArrayList<String> getListOfDiffRouters() {
 		ArrayList<String> macList = new ArrayList<>();
 		String mac;
@@ -349,10 +368,27 @@ public class Records  {
 		return macList;
 	}
 	
+	/**
+	 * This method checks if MAC exists in data base
+	 * @param mac
+	 * @return
+	 */
+	public boolean doesMacExist(String mac) {
+		for (SingleRecord currentRecord : _records) 
+			for (Wifi currentWifi : currentRecord.get_WifiList())
+				if(mac.equals(currentWifi.get_MAC()))
+					return true;
+		return false;
+	}
+
+/**
+ * This method return number of diffrent routers
+ * @return
+ */
 	public int numOfDiffRouter() {
 		return this.getListOfDiffRouters().size();
 	}
-	
+
 	public int size() {
 		return _records.size();
 	}

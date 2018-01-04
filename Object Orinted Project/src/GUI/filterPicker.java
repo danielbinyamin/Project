@@ -263,6 +263,8 @@ public class filterPicker extends JDialog {
 								textRdBtnSelected = rdBtnArr[i].getText();
 						}
 						boolean not=false;
+						
+						//check which filter is selected
 						switch (textRdBtnSelected) {
 						case "Date:":
 							LocalDate startDate = datePickerStart.getDate();

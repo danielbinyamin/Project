@@ -125,6 +125,9 @@ public class mainWindowUI {
 	public mainWindowUI() {
 		initialize();
 		numOfRouters.setText("N/A");
+		combinedCSVFileList = new ArrayList<>();
+		filesThread = new Thread();
+		dirThread = new Thread();
 	}
 
 	private static void updateInfo() {
@@ -178,6 +181,10 @@ public class mainWindowUI {
 					result = JOptionPane.showOptionDialog(frame, "A change has been detected in WiggleWifi Directory. Would you want to update?", "Update", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null,null,null);
 				if(result == JOptionPane.OK_OPTION) {//accepted an update
 					_programCore.loadRecordsFromWiggleDir(wiggleDir);
+					if(!combinedCSVFileList.isEmpty())
+						for (String string : combinedCSVFileList) {
+							_programCore.addCombinedCSV(string);
+						}
 					updateInfo();
 				}
 				b = dirWatch(wiggleDir);
@@ -192,31 +199,32 @@ public class mainWindowUI {
 		}
 	}
 
-	private static void runFilesWatch(ArrayList<String> combCSVFiles) throws InterruptedException {
+	private static void runFilesWatch() throws InterruptedException {
 
 		ArrayList<Long> combCSVFilesLastModif = new ArrayList<>();
 		int result=0;
 
 		//fill last modified information of all combined csv files
-		for (int i = 0; i < combCSVFiles.size(); i++) 
-			combCSVFilesLastModif.add(new File(combCSVFiles.get(i)).lastModified());
+		for (int i = 0; i < combinedCSVFileList.size(); i++) 
+			combCSVFilesLastModif.add(new File(combinedCSVFileList.get(i)).lastModified());
 
 		while(!filesThread.isInterrupted()) {
-			Thread.sleep(500);
+			filesThread.sleep(500);
 			//loop over all files
-			for (int i = 0; i < combCSVFiles.size(); i++) {
-				File currentFile = new File(combCSVFiles.get(i));
+			for (int i = 0; i < combinedCSVFileList.size(); i++) {
+				File currentFile = new File(combinedCSVFileList.get(i));
 				long currentFileLastModif = currentFile.lastModified();
 				if(currentFileLastModif!=combCSVFilesLastModif.get(i)) {//a change has been detected
 
 					if(currentFileLastModif==0) { //file has been deleted
-						combCSVFiles.remove(i);
+						combinedCSVFileList.remove(i);
 						combCSVFilesLastModif.remove(i);
 						result = JOptionPane.showOptionDialog(frame, "A Combined CSV has been deleted. Would you want to update?", "Update", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null,null,null);
 						if(result == JOptionPane.OK_OPTION) {//accepted an update
-
-							//TODO: deal with a combined file deleted
-
+							_programCore.loadRecordsFromWiggleDir(wiggleDir);
+							for (String comCsvPath : combinedCSVFileList) 
+								_programCore.addCombinedCSV(comCsvPath);
+							updateInfo();
 						}
 					}
 
@@ -224,11 +232,11 @@ public class mainWindowUI {
 						combCSVFilesLastModif.set(i, currentFileLastModif);
 						result = JOptionPane.showOptionDialog(frame, "A Combined CSV has been deleted. Would you want to update?", "Update", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null,null,null);
 						if(result == JOptionPane.OK_OPTION) {//accepted an update
-
-							//TODO: deal with a combined file modifed
-
+							_programCore.loadRecordsFromWiggleDir(wiggleDir);
+							for (String comCsvPath : combinedCSVFileList) 
+								_programCore.addCombinedCSV(comCsvPath);
+							updateInfo();
 						}
-
 					}
 				}
 			}
@@ -313,18 +321,35 @@ public class mainWindowUI {
 				fileChooser fl = new fileChooser();
 				try {
 					String combinedCsv = fl.run("Choose combined .csv file:");
-					try {
-						_programCore.addCombinedCSV(combinedCsv);
+					if(!combinedCSVFileList.contains(combinedCsv)) {
+						try {
+							_programCore.addCombinedCSV(combinedCsv);
+						}
+						catch(NullPointerException ex) {
+							_programCore = new programCoreV2();
+							_programCore.addCombinedCSV(combinedCsv);
+						}
+						txtFileAddedSuccesfully.setVisible(true);
+						createOutputCsvButton.setEnabled(true);
+						createOutputKmlBtn.setEnabled(true);
+						clearButton.setEnabled(true);
+						updateInfo();
+						//TODO:here
+
+						combinedCSVFileList.add(combinedCsv);
+						filesThread = new Thread(()->{
+							try {
+								runFilesWatch();
+							} catch (InterruptedException e1) {
+								//do nothing
+							}
+						});
+
+						filesThread.start();
+					}//end if
+					else {
+						JOptionPane.showMessageDialog(frame, "File already exists!", "File not added", JOptionPane.WARNING_MESSAGE, null);
 					}
-					catch(NullPointerException ex) {
-						_programCore = new programCoreV2();
-						_programCore.addCombinedCSV(combinedCsv);
-					}
-					txtFileAddedSuccesfully.setVisible(true);
-					createOutputCsvButton.setEnabled(true);
-					createOutputKmlBtn.setEnabled(true);
-					clearButton.setEnabled(true);
-					updateInfo();
 				}
 				catch (NullPointerException e2) {
 					// do nothing
@@ -358,7 +383,6 @@ public class mainWindowUI {
 					_programCore.createKMLfromRecords(outputDir);
 					txtOutputCsvCreated.setText("output kml created at: "+ outputDir);
 					txtOutputCsvCreated.setVisible(true);
-					System.out.println("Succesfully created output file at: " + outputDir);	
 				}
 				catch (NullPointerException e) {
 					//do nothing
@@ -454,6 +478,9 @@ public class mainWindowUI {
 		clearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				_programCore.cleanRecordsData();
+				_programCore.switchRecords();
+				_programCore.cleanRecordsData();
+				_programCore.switchRecords();
 				clearButton.setEnabled(false);
 				createOutputCsvButton.setEnabled(false);
 				createOutputKmlBtn.setEnabled(false);
@@ -466,6 +493,10 @@ public class mainWindowUI {
 				numOfScans.setText("N/A");
 
 				dirThread.interrupt();
+				if(!combinedCSVFileList.isEmpty())
+					filesThread.interrupt();
+
+				combinedCSVFileList.clear();
 
 			}
 		});
@@ -596,11 +627,15 @@ public class mainWindowUI {
 		btnApplyFilter.setEnabled(false);
 		btnApplyFilter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(_programCore.isRecordsEmpty())
+					JOptionPane.showMessageDialog(frame, "The data base is empty! Filter cannot be done.", "Data base empty", JOptionPane.WARNING_MESSAGE, null);
+				else{
 				_programCore.filter(_filters);
 				_programCore.switchRecords();
 				updateInfo();
 				btnApplyFilter.setEnabled(false);
 				revertBtn.setEnabled(true);
+			}
 			}
 		});
 		btnApplyFilter.setBounds(801, 534, 156, 33);
@@ -650,16 +685,24 @@ public class mainWindowUI {
 		JButton btnNewButton_1 = new JButton("Calculate");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(_programCore.isRecordsEmpty())
+					JOptionPane.showMessageDialog(frame, "The data base is empty! Please load it with data", "Data base empty", JOptionPane.WARNING_MESSAGE, null);
+				else{
+					String mac = textAreaMacAlgo1.getText();
+					if(_programCore.checkIfMacExistsInRecords(mac)) {
+						Map<String, Double> answer = _programCore.locateRouter(mac);
+						Double lat = answer.get("lat");
+						Double lon = answer.get("lon");
+						Double alt = answer.get("alt");
 
-				String mac = textAreaMacAlgo1.getText();
-				Map<String, Double> answer = _programCore.locateRouter(mac);
-				Double lat = answer.get("lat");
-				Double lon = answer.get("lon");
-				Double alt = answer.get("alt");
-
-				latAnswerAlgo1.setText(Double.toString(lat));
-				lonAnswerAlgo1.setText(Double.toString(lon));
-				altAnswerAlgo1.setText(Double.toString(alt));
+						latAnswerAlgo1.setText(Double.toString(lat));
+						lonAnswerAlgo1.setText(Double.toString(lon));
+						altAnswerAlgo1.setText(Double.toString(alt));
+					}
+					else {
+						JOptionPane.showMessageDialog(frame, "The MAC you entered does not exist in data base!", "mac dosen't exist", JOptionPane.WARNING_MESSAGE, null);
+					}
+				}
 			}
 		});
 		btnNewButton_1.setBounds(328, 69, 148, 32);
@@ -811,27 +854,34 @@ public class mainWindowUI {
 		JButton button = new JButton("Calculate");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(_programCore.isRecordsEmpty())
+					JOptionPane.showMessageDialog(frame, "The data base is empty! Please load it with data", "Data base empty", JOptionPane.WARNING_MESSAGE, null);
+				else {
+					try {
+					String mac1 = mac1InputAlgo2.getText();
+					String mac2 = mac2InputAlgo2.getText();
+					String mac3 = mac3InputAlgo2.getText();
+					int signal1 = Integer.parseInt(signal1InputAlgo2.getText());
+					int signal2 = Integer.parseInt(signal2InputAlgo2.getText());
+					int signal3 = Integer.parseInt(signal3InputAlgo2.getText());
+					Map<String, Double> answer;
+					try { answer = _programCore.locateUser(mac1, signal1, mac2, signal2, mac3, signal3); }		
+					catch (Exception e1) { 
+						answer = new HashMap<>();
+						e1.printStackTrace(); 
+					}
+					Double lat = answer.get("lat");
+					Double lon = answer.get("lon");
+					Double alt = answer.get("alt");
 
-				String mac1 = mac1InputAlgo2.getText();
-				String mac2 = mac2InputAlgo2.getText();
-				String mac3 = mac3InputAlgo2.getText();
-				int signal1 = Integer.parseInt(signal1InputAlgo2.getText());
-				int signal2 = Integer.parseInt(signal2InputAlgo2.getText());
-				int signal3 = Integer.parseInt(signal3InputAlgo2.getText());
-				Map<String, Double> answer;
-				try { answer = _programCore.locateUser(mac1, signal1, mac2, signal2, mac3, signal3); }		
-				catch (Exception e1) { 
-					answer = new HashMap<>();
-					e1.printStackTrace(); 
+					latAnswerAlgo2.setText(Double.toString(lat));
+					lonAnswerAlgo2.setText(Double.toString(lon));
+					altAnswerAlgo2.setText(Double.toString(alt));
+					}
+					catch (Exception ex) {
+						JOptionPane.showMessageDialog(frame, "One of the MAC's you entered do not exist in the data base!", "MAC not existing", JOptionPane.WARNING_MESSAGE, null);
+					}
 				}
-				Double lat = answer.get("lat");
-				Double lon = answer.get("lon");
-				Double alt = answer.get("alt");
-
-				latAnswerAlgo2.setText(Double.toString(lat));
-				lonAnswerAlgo2.setText(Double.toString(lon));
-				altAnswerAlgo2.setText(Double.toString(alt));
-
 			}
 		});
 		button.setBounds(725, 336, 148, 32);
