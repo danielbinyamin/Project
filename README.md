@@ -1,12 +1,19 @@
+Find latest executable at main folder: "projectExecutable_v1.0.jar" 
+
 *About*
 
 This is an ongoing project on our Object Oriented course in Ariel university.
-Authors: Daniel Binyamin & Tal Gropper.
+Authors: Daniel Binyamin id: 204258651 & Tal Gropper 203012323.
+
 This project recives variouse scans captured from the WiggleWifi android app and puts together a main csv file which joins all this information into one.
 We have implemented an option to filter the main CSV by various choices and export this filter to a KML file which can be viewed on Google Earth.
 We also implemented an algorithm to find user location by 3 MACs ans their signals, and another algorithm to find Rother location its MAC address.
+Out project has 2 threads monitoring its resources:
+1 Thread for the wiggleWifi scans directory and 2nd Thread for combined external csv files added.
 
-*Run Instrucios*
+There is an exectable version availble.
+
+*Run Instrucios from code*
 
 The program can be controlled by a Graphic User Interface.
 To run the program you will need to run "MainWinfowUI" class.
