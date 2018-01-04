@@ -21,15 +21,19 @@ you can end by entering 0.
 
 
 *Code Structure*
-
-- A WiggleLine class which represents a single network scan captured by the WiggleWifi app. This class is used to help us create our final CSV.
+- A Graphic-UI class.
+- A console-UI class. This class information from the user and send it the "ProgramCore" class.
+- A program-core class, which is the "brain" of the program. This class holds a "Records" object and depends on the user requests, filter or do other manipulations on the information.
+- A Records class, which includes a list of SingleRecords. This is our main data-class which we work with. It has many of our basic methods which we use to export to KML and CSV.
+- A SingleRecord class, which represents a single scan at a specific time and place (point on the map), which includes information regarding that scan (Wifi list, location, time etc...).
 - A Wifi class with all network veriables. 
-- A SingleRecord class which represents a single scan at a specific time & place(point on the map) which includes information regarding that scan (Wifi list, location, time etc...) .
-- A Records class which includes a list of SingleRecords. This is our main class which we work with. It has many of our basic methods which we use to export to KML and CSV.
-- A console-UI class.
-- A program-core class which is the "brain" of the program.
-- A locate-Router-Algo which take care of calculationg the estimated location of a given MAC address.
-- A find-user-algo which take care of calculationg the estimated location of a the user itself by given wifi networks and their values at a specific location.
+- A WiggleLine class, which represents a single network scan captured by the WiggleWifi app. This class is used to help us create our final CSV.
+- A Filter class, which holds a list of Conditions that the data should be filtered by.
+- A Condition interface which implemented by a lambda-function for each condition specified by the user. This interface has only one method "test", which gets a SingleRecord object and return TRUE value if the given SingleRecord object matches the boolean expression that was set bt the lambda function.
+- A filter-for-records class, which actually wraps Filter object with a toString method and a few more. This class was declared as "serializable".
+- A locate-Router-Algo class, which represents an implementation for an algorithm that gets a MAC address, and return the estimated location of that MAC (or router device).
+- A find-user-Algo class, which represents an implementation for an algorithm that gets a few MAC addresses and their signals recorded at a point of time, and return the estimated location of the user.
+
 
 To handle the KML types we used the JAK (Java api for KML) api which is part of de.micromata projects. We found a version of this api in .jar format and used it because it is more comfertable to work with as opposed to open source. We picked this api because after some research online we came to conclusion that this api is the one vastly used and which has the most example.
 For a kick start we used examples from:
