@@ -140,6 +140,7 @@ public class Records  {
 				catch (IOException e) { System.out.println("Error reading line while loading combined csv\n"+e);			
 				}
 			}
+			br.close();
 		}
 		catch (Exception e) {
 			System.out.println("Error loading combined CSV\n"+e);
