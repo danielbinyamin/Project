@@ -1,4 +1,4 @@
-Find latest executable at main folder: "projectExecutable_v1.0.jar" 
+Find latest executable at main folder: "projectExecutable_v1.0.1.jar" 
 
 *About*
 
