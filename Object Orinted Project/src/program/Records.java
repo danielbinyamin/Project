@@ -141,6 +141,7 @@ public class Records  {
 				}
 			}
 			br.close();
+			
 		}
 		catch (Exception e) {
 			System.out.println("Error loading combined CSV\n"+e);
