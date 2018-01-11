@@ -4,6 +4,11 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -21,13 +26,13 @@ public class programCoreV2 {
 	//members
 	private Records _records;
 	private Records _filteredRecords;
-	
+
 	//constructors
 	public programCoreV2(Records records) {
 		_records = new Records(records);
 		_filteredRecords = new Records();
 	}
-	
+
 	public programCoreV2() {
 		_records = new Records();
 		_filteredRecords = new Records();
@@ -70,7 +75,7 @@ public class programCoreV2 {
 		File dir = new File(wiggleDir);
 		_records.CSV2Records(dir);
 	}
-	
+
 	public boolean isRecordsEmpty() {
 		return _records.isEmpty();
 	}
@@ -82,7 +87,7 @@ public class programCoreV2 {
 	 * @return String represents a message for the user with the path of the created csv.
 	 */
 	public Map<String, Double> locateRouter(String mac){
-		
+
 		locateRouterAlgo a = new locateRouterAlgo(_records, mac);
 		Map<String,Double> result = new HashMap<String,Double>();
 		Double lat = new Double(a.getLocation().getX());
@@ -91,37 +96,59 @@ public class programCoreV2 {
 		result.put("lat",lat);
 		result.put("lon",lon);
 		result.put("alt",alt);
-		
+
 		return result;
 
 	}
-	
+
 	public void addCombinedCSV(String path) {
 		Records combinedToAdd = new Records();
 		combinedToAdd.loadRecordsFromFilev2(path);
 		_records.addRecords(combinedToAdd);
 	}
 
+	public Connection addCombinedDB(String url, String table, String username, String password) throws Exception {
+		Records combinedToAdd = new Records();
+		Connection connection = combinedToAdd.loadRecordsFromDB(url, table, username, password);
+		_records.addRecords(combinedToAdd);
+		return connection;
+	}
+	
+	public void reAddCombinedDB(Connection con, String table) throws Exception {
+		Records combinedToAdd = new Records();
+		combinedToAdd.reloadRecordsFromDB(con, table);
+		_records.addRecords(combinedToAdd);
+	}
+
 	public void cleanRecordsData() {
 		_records = new Records();
 	}
-	
+
+	public Long getLastModified(Connection connection, String table) throws ClassNotFoundException, SQLException {
+		//read data from table
+		String db = connection.getMetaData().getDatabaseProductName();
+		Statement stmt = connection.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT UPDATE_TIME FROM information_schema.tables WHERE  TABLE_SCHEMA = " + db + "AND TABLE_NAME = "+table);
+		//return value
+		return rs.getLong(0);
+	}
+
 	public void createCSVfromRecords(String pathToSave) {
 		File f = new File(pathToSave);
 		_records.toCSV(f);
 	}
-	
+
 	public void createKMLfromRecords(String pathToSave) {
 		String fileName = "output.kml";
 		pathToSave +="/"+fileName;
 		File f = new File(pathToSave);
 		_records.toKml(f);
 	}
-	
+
 	public void filter(FilterForRecords filter) {
 		_filteredRecords = _records.filterv2(filter.get_filters());
 	}
-	
+
 	/**This function return number of scans in program
 	 * 
 	 * @return number of scans
@@ -129,7 +156,7 @@ public class programCoreV2 {
 	public int scanCount() {
 		return _records.size();
 	}
-	
+
 	/**This function return number of diffrent MAC's in the data structure
 	 * 
 	 * @return number of routers
@@ -137,21 +164,21 @@ public class programCoreV2 {
 	public int diffRouterCount() {
 		return _records.numOfDiffRouter();
 	}
-	
+
 	public Records get_records() {
 		return _records;
 	}
-	
+
 	public void setFilteredRecords(Records other) {
 		_filteredRecords = new Records(other);
 	}
-	
+
 	public void switchRecords() {
 		Records temp = new Records(_records);
 		_records = new Records(_filteredRecords);
 		_filteredRecords = new Records(temp);
 	}
-	
+
 	public void cleanFilteredRecords() {
 		_filteredRecords = new Records();
 	}
@@ -177,11 +204,11 @@ public class programCoreV2 {
 		result.put("lat",lat);
 		result.put("lon",lon);
 		result.put("alt",alt);
-		
+
 		return result;
 
 	}
-	
+
 	public boolean checkIfMacExistsInRecords(String mac) {
 		return _records.doesMacExist(mac);
 	}
