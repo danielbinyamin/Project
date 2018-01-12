@@ -106,11 +106,36 @@ public class programCoreV2 {
 		combinedToAdd.loadRecordsFromFilev2(path);
 		_records.addRecords(combinedToAdd);
 	}
+	
+	public ResultSet queryDB(Connection connection, String query){
+		try{
+		Statement stmt = connection.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		return rs;
+		}
+		catch (Exception error){
+			System.out.println("error quering the DB: "+error);
+			return null;
+		}
+	}
 
-	public Connection addCombinedDB(String url, String table, String username, String password) throws Exception {
-		Records combinedToAdd = new Records();
-		Connection connection = combinedToAdd.loadRecordsFromDB(url, table, username, password);
-		_records.addRecords(combinedToAdd);
+	public Connection initConnectionToDB(String url, String username, String password){
+		try {
+			return DriverManager.getConnection(url, username, password);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public Connection addCombinedDB(Connection connection, String table) throws Exception {
+		//get table from DB
+		Statement stmt = connection.createStatement();
+		String query = "select * from " + table + ";";
+		ResultSet rs = queryDB(connection, query);
+		Records combinedRecords = new Records();
+		combinedRecords.loadRecordsFromDB(rs);
+		_records.addRecords(combinedRecords);
 		return connection;
 	}
 	
@@ -124,13 +149,14 @@ public class programCoreV2 {
 		_records = new Records();
 	}
 
-	public Long getLastModified(Connection connection, String table) throws ClassNotFoundException, SQLException {
+	public String getLastModified(Connection connection, String table) throws ClassNotFoundException, SQLException {
 		//read data from table
-		String db = connection.getMetaData().getDatabaseProductName();
-		Statement stmt = connection.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT UPDATE_TIME FROM information_schema.tables WHERE  TABLE_SCHEMA = " + db + "AND TABLE_NAME = "+table);
+		String db = connection.getCatalog();
+		String query = "SELECT UPDATE_TIME FROM information_schema.tables WHERE  TABLE_SCHEMA = '" + db + "' AND TABLE_NAME = '"+table+"'";
+		ResultSet rs = queryDB(connection, query);
+		rs.next();
 		//return value
-		return rs.getLong(0);
+		return rs.getString(1);
 	}
 
 	public void createCSVfromRecords(String pathToSave) {
