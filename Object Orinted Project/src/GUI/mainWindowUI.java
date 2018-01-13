@@ -81,11 +81,11 @@ public class mainWindowUI {
 		public String getTable() {
 			return _table;
 		}
-		public Long getLastModified() {
+		public String getLastModified() {
 			return _lastModified;
 		}
 		public void setLastModified() throws ClassNotFoundException, SQLException {
-			Long prevLastModified = _lastModified;
+			String prevLastModified = new String(_lastModified);
 			_lastModified = _programCore.getLastModified(_con, _table);
 			if (prevLastModified != _lastModified) {
 				_isModified = true;
