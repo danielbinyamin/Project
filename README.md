@@ -8,13 +8,22 @@ Authors: Daniel Binyamin id: 204258651 & Tal Gropper 203012323.
 This project recives variouse scans captured from the WiggleWifi android app and puts together a main csv file which joins all this information into one.
 We have implemented an option to filter the main CSV by various choices and export this filter to a KML file which can be viewed on Google Earth.
 We also implemented an algorithm to find user location by 3 MACs ans their signals, and another algorithm to find Rother location its MAC address.
-Out project has 2 threads monitoring its resources:
-1 Thread for the wiggleWifi scans directory and 2nd Thread for combined external csv files added.
+Out project has 3 threads monitoring its resources:
+1. A Thread for the wiggleWifi scans directory.
+2. A Thread for combined external csv files added.
+3. A Thread for combined external Database tables added.
 
-There is an exectable version availble.
+*Build process by Gradle*
+This project can be built by Gradle.
+By executing "build" task for this project, a few tasks will be performed:
+1. The code will be compiled.
+2. Some JUnit tests will run to make sure the program works well.
+3. A JAR and ZIP files will be created.
+4. A JavaDoc will be created.
+5. Some temporary files will be deleted after compilation.
+
 
 *Run Instrucios from code*
-
 The program can be controlled by a Graphic User Interface.
 To run the program you will need to run "MainWinfowUI" class.
 Once run, you will be asked to enter the path to your WiggleWifi scans.
@@ -24,6 +33,7 @@ Now you will have a few options:
 1. Filter the data and create a KML file with a timeline, which can be viewd in Google-Earth desktop application.
 2. Locate a router of a Wifi network by a few parameters.
 3. Locate your location by a few parameters (wifi networks and their signals).
+4. Add more records from a CSV file, or from a mySql table from a remote server.
 you can end by entering 0.
 
 
