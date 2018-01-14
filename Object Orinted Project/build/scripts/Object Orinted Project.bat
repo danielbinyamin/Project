@@ -63,10 +63,10 @@ set CMD_LINE_ARGS=%*
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\Object Orinted Project.jar;%APP_HOME%\lib\guava-20.0.jar
+set CLASSPATH=%APP_HOME%\lib\Object Orinted Project.jar;%APP_HOME%\lib\LGoodDatePicker-10.3.1.jar;%APP_HOME%\lib\JavaAPIforKml-2.2.1.jar;%APP_HOME%\lib\jaxb-xjc-2.2.jar;%APP_HOME%\lib\jaxb-impl-2.3.0.jar;%APP_HOME%\lib\scalajs-junit-test-runtime_2.13.0-M2-1.0.0-M2.jar;%APP_HOME%\lib\scalajs-test-interface_2.13.0-M2-1.0.0-M2.jar;%APP_HOME%\lib\scalajs-library_2.13.0-M2-1.0.0-M2.jar;%APP_HOME%\lib\scala-library-2.13.0-M2.jar
 
 @rem Execute Object Orinted Project
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %OBJECT_ORINTED_PROJECT_OPTS%  -classpath "%CLASSPATH%" com.boraji.tutorial.MainApp %CMD_LINE_ARGS%
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %OBJECT_ORINTED_PROJECT_OPTS%  -classpath "%CLASSPATH%" sr.main.java.GUI.mainWindowUI %CMD_LINE_ARGS%
 
 :end
 @rem End local scope for the variables with windows NT shell
