@@ -1,5 +1,3 @@
-Find latest executable at main folder: "projectExecutable_v1.0.1.jar" 
-
 *About*
 
 This is an ongoing project on our Object Oriented course in Ariel university.
@@ -13,8 +11,9 @@ Out project has 3 threads monitoring its resources:
 2. A Thread for combined external csv files added.
 3. A Thread for combined external Database tables added.
 
-*Build process by Gradle*
-This project can be built by Gradle.
+*Run & Build (By Gradle)*
+-A runnable JAR file for this project can be found in the main folder, in the name "runnable Jar". 
+-This project can be built by Gradle. To do this, run "build" task.
 By executing "build" task for this project, a few tasks will be performed:
 1. The code will be compiled.
 2. Some JUnit tests will run to make sure the program works well.
