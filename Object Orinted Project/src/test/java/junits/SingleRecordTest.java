@@ -14,7 +14,7 @@ import program.*;
  */
 public class SingleRecordTest {
 
-	@Test
+	//@Test
 	public void testConstructor() {
 		Wifi wifi1 = new Wifi("SSID1","MAC2",12,-67);
 		Wifi wifi2 = new Wifi("SSID2","MAC2",15,-70);

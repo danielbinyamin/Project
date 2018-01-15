@@ -6,14 +6,6 @@ repositories {
 	mavenCentral()
     jcenter()
 }
-dependencies {
-    compile 'com.github.lgooddatepicker:LGoodDatePicker:10.3.1'
-    compile 'com.sun.xml.bind:jaxb-impl:2.3.0'
-    compile 'de.micromata.jak:JavaAPIforKml:2.2.1'
-    compile 'de.micromata.jak:JavaAPIforKml:2.2.1'
-    compile 'org.scala-js:scalajs-junit-test-runtime_2.13.0-M2:1.0.0-M2'
-	testCompile 'junit:junit:4.12'
-}
 
 javadoc {
 	failOnError = false
@@ -23,6 +15,19 @@ javadoc {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'src.main.java.GUI.mainWindowUI'
+        attributes 'Main-Class': 'GUI.mainWindowUI'
     }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+dependencies {
+    compile 'com.github.lgooddatepicker:LGoodDatePicker:10.3.1'
+    compile 'com.sun.xml.bind:jaxb-impl:2.3.0'
+    compile group: 'de.micromata.jak', name: 'JavaAPIforKml', version: '2.2.0'
+    compile 'org.scala-js:scalajs-junit-test-runtime_2.13.0-M2:1.0.0-M2'
+	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
+	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.18'
+	testCompile 'junit:junit:4.12'
 }

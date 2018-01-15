@@ -1,6 +1,5 @@
 package program;
 
-import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -130,7 +129,6 @@ public class programCoreV2 {
 	
 	public Connection addCombinedDB(Connection connection, String table) throws Exception {
 		//get table from DB
-		Statement stmt = connection.createStatement();
 		String query = "select * from " + table + ";";
 		ResultSet rs = queryDB(connection, query);
 		Records combinedRecords = new Records();
