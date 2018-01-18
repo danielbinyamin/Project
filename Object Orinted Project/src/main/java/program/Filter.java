@@ -69,7 +69,11 @@ public class Filter implements Serializable {
 		}
 	}
 
-	
+	/**
+	 * A method to add a filter and the string relation to it
+	 * @param c
+	 * @param relation
+	 */
 	public void addFilter(Condition c, String relation) {
 		_filters.add(c);
 		_relations.add(relation);
@@ -93,6 +97,11 @@ public class Filter implements Serializable {
 		}
 	}
 
+	/**
+	 * This method runs a filter over a specific scan taken
+	 * @param r
+	 * @return pass/fail
+	 */
 	public boolean checkFilterOverSingleRecord(SingleRecord r) {
 		if(!this.multipleFilters())//only one filter with no relation
 			return _filters.get(0).test(r);

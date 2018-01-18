@@ -58,7 +58,9 @@ public class FilterForRecords implements  Serializable {
 		}
 	}
 	
-	//methods to create new filter
+	/*------------methods to create new filter-----------------
+	 * These methods are when creating a new filter from different types
+	 */
 	
 	public void createDateFilter(Calendar beginDate, Calendar endDate, boolean not) {
 		Condition timeCondition;
@@ -104,7 +106,10 @@ public class FilterForRecords implements  Serializable {
 		_f = new Filter(idCondition);	
 	}
 
-	//methods to add a a filter over existing filters
+	/*--------------methods to add a a filter over existing filters---------------
+	 * These methods are when adding a seccond filter from diffrent types. recives a relation
+	 * between the 2 filters.
+	 */
 	
 	public void addDateFilter(Calendar beginDate, Calendar endDate, boolean not, String relation) {
 		Condition timeCondition;

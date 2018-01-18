@@ -51,7 +51,7 @@ public class Records  {
 	//NOT USED IN GUI
 	/**
 	 * This method loads a combined CSV into the records data structure
-	 * NOTE!! not used in GUI
+	 * NOTE!! not used in GUI deprecated method!
 	 * @param WiggleWifi directory
 	 */
 	public void loadRecordsFromFile(String path) {
@@ -206,7 +206,7 @@ public class Records  {
 	}
 
 	/**
-	 * This method loads Records from a given combined Database
+	 * This method reloads Records from a given combined Database
 	 * @param url
 	 * @param username
 	 * @param password
@@ -429,6 +429,7 @@ public class Records  {
 	//old version. NOT USED IN GUI
 	/**
 	 * This method returns a filtered Records object by the c Condition
+	 * NOTE: deprecated code
 	 * @param c (Condition).
 	 * @return Filtered Records object.
 	 * @author Daniel & Tal
@@ -445,7 +446,7 @@ public class Records  {
 	/**
 	 * This is the newer filter method using the Filter class
 	 * @param f
-	 * @return
+	 * @return filtered Records
 	 */
 	public Records filterv2(Filter f) {
 		ArrayList<SingleRecord> filterd = new ArrayList<SingleRecord>();
@@ -462,7 +463,7 @@ public class Records  {
 
 	/**
 	 * This function returns all the different MAC's in the Records as a list.
-	 * @return
+	 * @return list of MAC's
 	 */
 	public ArrayList<String> getListOfDiffRouters() {
 		ArrayList<String> macList = new ArrayList<>();

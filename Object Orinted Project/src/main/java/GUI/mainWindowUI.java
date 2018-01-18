@@ -231,67 +231,11 @@ public class mainWindowUI {
 	}
 
 	/**
-	 * This function creates a Watch-Service for loaded-folders with Wigle or combined files. 
-	 * @param dir - path to folder
-	 * @throws Exception if WatchService can not be created for some reason.
+	 * This function is what runs in the filesThread
+	 * Will loop endlessly over the list of files and compare its last modified date
+	 * Prompting a message when a change is detected
+	 * @throws InterruptedException
 	 */
-	private static boolean dirWatch(String dir) throws IOException, InterruptedException {
-
-		Path path = Paths.get(dir+"\\");
-		WatchService watchService = path.getFileSystem().newWatchService();
-
-		path.register(watchService,
-				StandardWatchEventKinds.ENTRY_CREATE,
-				StandardWatchEventKinds.ENTRY_MODIFY,
-				StandardWatchEventKinds.ENTRY_DELETE);
-
-		while(true) {
-			WatchKey watchKey = watchService.take();
-
-			for (WatchEvent<?> event : watchKey.pollEvents()) {
-				WatchEvent.Kind<?> k = event.kind();
-				if(k==StandardWatchEventKinds.ENTRY_CREATE) 
-					return true;			
-				else if(k==StandardWatchEventKinds.ENTRY_MODIFY) 
-					return true;
-				else if(k==StandardWatchEventKinds.ENTRY_DELETE) 
-					return true;
-			}
-
-			if(!watchKey.reset()) {
-				watchKey.cancel();
-				watchService.close();
-			}
-		}
-	}//end F
-
-	private static void runDirWatch() {
-		try {
-			boolean b = dirWatch(wiggleDir);
-			int result=0;
-			while(!dirThread.isInterrupted()) {
-				if(b) 
-					result = JOptionPane.showOptionDialog(frame, "A change has been detected in WiggleWifi Directory. Would you want to update?", "Update", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null,null,null);
-				if(result == JOptionPane.OK_OPTION) {//accepted an update
-					_programCore.loadRecordsFromWiggleDir(wiggleDir);
-					if(!combinedCSVFileList.isEmpty())
-						for (String string : combinedCSVFileList) {
-							_programCore.addCombinedCSV(string);
-						}
-					updateInfo();
-				}
-				b = dirWatch(wiggleDir);
-
-			}
-		}
-		catch (IOException e) {
-			System.out.println("Error at dirWatch thread");
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			//do nothing
-		}
-	}
-
 	private static void runFilesWatch() throws InterruptedException {
 		ArrayList<Long> combCSVFilesLastModif = new ArrayList<>();
 		int result=0;

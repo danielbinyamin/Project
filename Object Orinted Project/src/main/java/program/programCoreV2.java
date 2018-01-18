@@ -39,7 +39,7 @@ public class programCoreV2 {
 
 	//Methods
 	/**
-	 * This function converts a string to date in the right format for KML files.
+	 * This private function converts a string to date in the right format for KML files.
 	 * @param date - a string represents the date to convert.
 	 * @param time - a string represents the time to convert.
 	 * @return Calendar object.
@@ -100,6 +100,10 @@ public class programCoreV2 {
 
 	}
 
+	/**
+	 * This method adds a combined CSV to the Records data structure
+	 * @param path
+	 */
 	public void addCombinedCSV(String path) {
 		Records combinedToAdd = new Records();
 		combinedToAdd.loadRecordsFromFilev2(path);
@@ -143,6 +147,9 @@ public class programCoreV2 {
 		_records.addRecords(combinedToAdd);
 	}
 
+	/**
+	 * This method cleans out the Records data structure
+	 */
 	public void cleanRecordsData() {
 		_records = new Records();
 	}
@@ -157,11 +164,19 @@ public class programCoreV2 {
 		return rs.getString(1);
 	}
 
+	/**
+	 * This method creates a CSV from the Records data structure
+	 * @param pathToSave
+	 */
 	public void createCSVfromRecords(String pathToSave) {
 		File f = new File(pathToSave);
 		_records.toCSV(f);
 	}
 
+	/**
+	 * This method creates a KML from the Records data structure
+	 * @param pathToSave
+	 */
 	public void createKMLfromRecords(String pathToSave) {
 		String fileName = "output.kml";
 		pathToSave +="/"+fileName;
@@ -169,6 +184,11 @@ public class programCoreV2 {
 		_records.toKml(f);
 	}
 
+	/**
+	 * This method filters out the main Records data structure and saves it in the 2nd
+	 * class member _filteredRecords 
+	 * @param filter
+	 */
 	public void filter(FilterForRecords filter) {
 		_filteredRecords = _records.filterv2(filter.get_filters());
 	}
@@ -193,16 +213,27 @@ public class programCoreV2 {
 		return _records;
 	}
 
+	/**
+	 * This method sets the filtered Records class member
+	 * @param other
+	 */
 	public void setFilteredRecords(Records other) {
 		_filteredRecords = new Records(other);
 	}
 
+	/**
+	 * This method switched between the main Records data structure and the filtered one.
+	 * After this call the main Records data structure is the filtered one and the opposite
+	 */
 	public void switchRecords() {
 		Records temp = new Records(_records);
 		_records = new Records(_filteredRecords);
 		_filteredRecords = new Records(temp);
 	}
 
+	/**
+	 * This method cleans out the filtered Records class member
+	 */
 	public void cleanFilteredRecords() {
 		_filteredRecords = new Records();
 	}
@@ -233,6 +264,11 @@ public class programCoreV2 {
 
 	}
 
+	/**
+	 * This method returns true if a MAC address exists in the main Records data structure
+	 * @param mac
+	 * @return
+	 */
 	public boolean checkIfMacExistsInRecords(String mac) {
 		return _records.doesMacExist(mac);
 	}
