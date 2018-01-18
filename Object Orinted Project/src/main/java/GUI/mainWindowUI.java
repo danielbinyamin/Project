@@ -10,7 +10,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import program.FilterForRecords;
+import program.GUIdirListener;
 import program.Records;
+import program.dirListener;
 import program.programCore;
 import program.programCoreV2;
 
@@ -87,7 +89,7 @@ public class mainWindowUI {
 		public String getLastModified() {
 			return _lastModified;
 		}
-		
+
 		/**
 		 * This method set "last-modified" value.
 		 * @throws ClassNotFoundException, SQLException
@@ -166,6 +168,7 @@ public class mainWindowUI {
 	private JTextArea loadDb_DB_Text;
 	private JTextArea loadDb_Table_Text;
 	private JButton btnAddCombinedDb;
+	private dirListener dirListener;
 
 	/**
 	 * Launch the application.
@@ -195,7 +198,7 @@ public class mainWindowUI {
 		DbThread = new Thread();
 		dirThread = new Thread();
 	}
-	
+
 	public void setEnabled_LoadFromDB(boolean val) {
 		loadDb_DB_header.setEditable(val);
 		loadDb_DB_Text.setEditable(val);
@@ -211,11 +214,11 @@ public class mainWindowUI {
 		loadDb_Username_Text.setEditable(val);
 		btnAddCombinedDb.setEnabled(val);
 	}
-	
+
 	/**
 	 * This function updates the information given on the left-bottom part of the GUI 
 	 */
-	private static void updateInfo() {
+	public static void updateInfo() {
 		int numOfScansInt = _programCore.scanCount();
 		int numOfRoutersInt = _programCore.diffRouterCount();
 		numOfScans.setText(Integer.toString(numOfScansInt));
@@ -226,7 +229,7 @@ public class mainWindowUI {
 	public void updateFilterInfo() {
 		txtpncurrentFilterInformation.setText(_filters.toString());
 	}
-	
+
 	/**
 	 * This function creates a Watch-Service for loaded-folders with Wigle or combined files. 
 	 * @param dir - path to folder
@@ -331,7 +334,7 @@ public class mainWindowUI {
 			}
 		}
 	}
-	
+
 	/**
 	 * This function reload all SingleRecords after a combined record was changed.
 	 */
@@ -561,9 +564,10 @@ public class mainWindowUI {
 		dbAddedSuccesfully.setFont(new Font("Tahoma", Font.BOLD, 13));
 		dbAddedSuccesfully.setEditable(false);
 		dbAddedSuccesfully.setText("Database added succesfully!");
-		dbAddedSuccesfully.setBounds(743, 180, 185, 22);
+		dbAddedSuccesfully.setBounds(759, 252, 213, 31);
 		general.add(dbAddedSuccesfully);
 		dbAddedSuccesfully.setColumns(10);
+		dbAddedSuccesfully.setVisible(false);
 
 		txtNumberOfScans = new JTextField();
 		txtNumberOfScans.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -776,7 +780,9 @@ public class mainWindowUI {
 				numOfRouters.setText("N/A");
 				numOfScans.setText("N/A");
 
-				dirThread.interrupt();
+				//change dirListner flag and end the dir Thread
+				dirListener.stopListen();
+				
 				if(!combinedCSVFileList.isEmpty())
 					filesThread.interrupt();
 
@@ -803,10 +809,27 @@ public class mainWindowUI {
 						btnLoadWigglewifiDirectory.setEnabled(false);
 					}
 					updateInfo();
-					dirThread = new Thread(()->{
-						runDirWatch();
-					});
-
+					
+					//creating a Runnable dirListner Object while implementing its abstract method
+					dirListener = new dirListener(wiggleDir) {
+						
+						//implementing the abstract action method of the dirListner object
+						public void action() {
+							int result = JOptionPane.showOptionDialog(frame, "A change has been detected in WiggleWifi Directory. Would you want to update?", "Update", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null,null,null);
+							if(result == JOptionPane.OK_OPTION) {//accepted an update
+								_programCore.loadRecordsFromWiggleDir(wiggleDir);
+								if(!combinedCSVFileList.isEmpty())
+									for (String string : combinedCSVFileList) {
+										_programCore.addCombinedCSV(string);
+									}
+								updateInfo();
+							}
+						}
+					};
+					
+					//creating Thread from runnable object
+					dirThread = new Thread(dirListener);
+					
 					dirThread.start();
 				}
 				catch (NullPointerException e) {
